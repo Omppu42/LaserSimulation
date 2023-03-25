@@ -129,3 +129,43 @@ class SquareObstacle():
                 return (self.points_xy[_i], self.points_xy[sec_index])
             
         return None
+    
+
+class CircleObstacle():
+    def __init__(self, center_pos: tuple, radius: float):
+        self.x, self.y = center_pos
+        self.radius = radius
+        self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32) #
+        self.surf = self.surf.convert_alpha()
+        self.surf.fill((0, 0, 0, 0))
+        
+        self.width = .98
+
+        pygame.draw.circle(self.surf, (200, 200, 200, 255), (self.radius, self.radius), radius)
+        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), radius * self.width)
+
+        self.rect = self.surf.get_rect(center=(self.x, self.y))
+
+    
+    def draw(self, screen: pygame.Surface):
+        screen.blit(self.surf, self.rect)
+
+
+    def check_collision(self, point: tuple, circle_last_hit_cetnerxy: tuple) -> tuple | None:
+        """If point inside circle, return tuple of circle's center x and y. Else return None"""
+        if circle_last_hit_cetnerxy == (self.x, self.y): return None
+        
+        dist_to_center = math.sqrt( math.pow(self.x - point[0], 2) + math.pow(self.y - point[1], 2) )
+        if dist_to_center < self.radius and dist_to_center > self.radius * self.width:
+            return (self.x, self.y)
+        
+        return None
+            
+    
+    def find_normal_at_point(self, point: tuple) -> tuple:
+        normal = (point[0] - self.x, point[1] - self.y)
+
+        length = math.sqrt( math.pow(normal[0], 2) + math.pow(normal[1], 2) )
+        normal = (normal[0] / length, normal[1] / length)
+
+        return normal

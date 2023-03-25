@@ -3,7 +3,7 @@ import pygame
 
 import numpy as np
 
-from obstacle import SquareObstacle
+from obstacle import SquareObstacle, CircleObstacle
 pygame.init()
 
 class Ray():
@@ -14,6 +14,7 @@ class Ray():
         self.dir_rad = self.dir_deg * math.pi/180
         self.step_size = 1
         self.hit_between_points = None # tuple
+        self.hit_circle_center_at_pos = None # tuple
 
         self.move_vec = (self.step_size * math.cos(self.dir_rad), self.step_size * math.sin(self.dir_rad))
         self.rays_surface = pygame.Surface(screen_size)
@@ -41,6 +42,26 @@ class Ray():
 
         self.hit_between_points = hit_between_points
         print("HIt")
+
+        # collided
+        normalized_normal = obstacle.find_normal_at_point((self.x, self.y))
+
+        move_vec_mag = math.sqrt(math.pow(self.x - (self.x + self.move_vec[0]), 2) + math.pow(self.y - (self.y + self.move_vec[1]), 2))
+
+        normalized_move = (self.move_vec[0] / move_vec_mag, self.move_vec[1] / move_vec_mag)
+
+        dot = 2 * np.dot(normalized_move, normalized_normal)
+        self.move_vec = ((normalized_move[0] - dot * normalized_normal[0]) * self.step_size,
+                            (normalized_move[1] - dot * normalized_normal[1]) * self.step_size)
+        return True
+    
+
+    def check_collision_circle(self, obstacle: CircleObstacle) -> bool:
+        collision = obstacle.check_collision((self.x, self.y), (0,0))
+        if collision:
+            self.hit_circle_center_at_pos = collision
+            self.hit_between_points = (0, 0)
+        else: return False
 
         # collided
         normalized_normal = obstacle.find_normal_at_point((self.x, self.y))

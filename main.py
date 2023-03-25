@@ -1,7 +1,7 @@
 import pygame
 
 from ray import Ray
-from obstacle import SquareObstacle
+from obstacle import SquareObstacle, CircleObstacle
 
 pygame.init()
 
@@ -18,6 +18,8 @@ def main():
     obstacles_square = [SquareObstacle((300, 300), 100, 30), SquareObstacle((600, 150), 100, 60), SquareObstacle((500, 350), 50, 60), 
                         SquareObstacle((400, 100), 10, 84), SquareObstacle((300, 10), 10, 82)]
 
+    obstacles_circle = [CircleObstacle(( 410, 250), 50), CircleObstacle(( 460, 198), 50)]
+
     ray = Ray((width/2, height/2), (width, height), 260)
     ray.calculate_ray()
 
@@ -26,9 +28,6 @@ def main():
     total_steps = 2000
     current_step = 0
 
-    collision_cooldown_frames = 5
-    collision_cooldown_current = 0
-    on_collision_cooldown = False
     num_colls = 0
 
     while running:
@@ -41,19 +40,14 @@ def main():
         #     current_step = 101
         if current_step < total_steps:
             for obs in obstacles_square:
-
-                # collision cooldown
-                if on_collision_cooldown and collision_cooldown_current < collision_cooldown_frames: 
-                    collision_cooldown_current += 1
-                    break
-
-                on_collision_cooldown = False
-
                 if ray.check_collision_square(obs):
-                    on_collision_cooldown = True
                     num_colls += 1
                     break
 
+            for obs in obstacles_circle:
+                if ray.check_collision_circle(obs):
+                    num_colls += 1
+                    break
 
             ray.move()
             current_step += 1
@@ -62,6 +56,9 @@ def main():
 
         for obs in obstacles_square:
             obs.draw(screen)
+        for obs in obstacles_circle:
+            obs.draw(screen)
+            
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
