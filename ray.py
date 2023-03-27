@@ -12,7 +12,7 @@ class Ray():
         self.w, self.h = screen_size
         self.dir_deg = dir_deg
         self.dir_rad = self.dir_deg * math.pi/180
-        self.step_size = 1
+        self.step_size = .5
         self.hit_between_points = None # tuple
         self.hit_circle_center_at_pos = None # tuple
 

@@ -113,7 +113,7 @@ class SquareObstacle():
 
             # hit corner
             #if dist_to_first < 1 + 10 / self.side_length: 
-            if dist_to_first < 1.5: 
+            if dist_to_first < 2: 
                 distances = self.get_vertex_distances(point)
                 s = set(distances)
                 

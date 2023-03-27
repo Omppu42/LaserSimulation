@@ -1,4 +1,5 @@
 import pygame
+import cProfile
 
 from ray import Ray
 from obstacle import SquareObstacle, CircleObstacle
@@ -19,7 +20,7 @@ def main():
                         SquareObstacle((600, 300), 50, 85), 
                         SquareObstacle((250, 525), 100, 82), SquareObstacle((490, 670), 100, 70), SquareObstacle((600, 480), 100, 70)]
 
-    obstacles_circle = [CircleObstacle(( 440, 250), 51), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20)]
+    obstacles_circle = [CircleObstacle(( 440, 250), 51), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
 
     ray = Ray((width/2, height/2), (width, height), 260)
     ray.calculate_ray()
@@ -31,22 +32,25 @@ def main():
 
     num_colls = 0
 
+    updates_at_a_time = 10
+
     while running:
         screen.fill(background_colour)
 
         if current_step < total_steps:
-            for obs in obstacles_square:
-                if ray.check_collision_square(obs):
-                    num_colls += 1
-                    break
+            for _ in range(updates_at_a_time):
+                for obs in obstacles_square:
+                    if ray.check_collision_square(obs):
+                        num_colls += 1
+                        break
 
-            for obs in obstacles_circle:
-                if ray.check_collision_circle(obs):
-                    num_colls += 1
-                    break
+                for obs in obstacles_circle:
+                    if ray.check_collision_circle(obs):
+                        num_colls += 1
+                        break
 
-            ray.move()
-            current_step += 1
+                ray.move()
+                current_step += 1
 
         ray.draw_ray(screen)
 
@@ -64,7 +68,20 @@ def main():
         screen.blit(fps, (10,10))
 
         pygame.display.update()
-        clock.tick(800)
+        clock.tick(60)
+
+    
 
 if __name__ == "__main__":
-    main()
+    profile = False
+
+    if profile:
+        pr = cProfile.Profile()
+        pr.enable()
+
+        main()
+
+        pr.disable()
+        pr.print_stats()
+    else:
+        main()
