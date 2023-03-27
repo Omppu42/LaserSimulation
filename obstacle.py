@@ -48,7 +48,6 @@ class SquareObstacle():
     def find_normal_at_point(self, point: tuple) -> tuple:
         """Returns a vector containing the surface's normal from the point of impact"""
 
-
         self.temp_draw_point = point
         distances = self.get_vertex_distances(point)
 
@@ -74,9 +73,6 @@ class SquareObstacle():
         vec = ((vec[0] - point[0]) / vec_mag, 
                (vec[1] - point[1]) / vec_mag)
 
-        # print("Original point:", point)
-        # print("Distances:", distances[0], distances[1], distances[2], distances[3], "Normal vec:", vec)
-
         return vec
 
 
@@ -90,9 +86,11 @@ class SquareObstacle():
 
 
     def draw(self, screen: pygame.Surface):
-        #pygame.draw.circle(screen, (200, 200, 200), self.temp_draw_point, 2)
         pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
-        #pygame.draw.line(screen, (255,255,255), self.temp_draw_point, self.normal)
+
+        # normal
+        # pygame.draw.circle(screen, (200, 200, 200), self.temp_draw_point, 2)
+        # pygame.draw.line(screen, (255,255,255), self.temp_draw_point, self.normal)
 
         # closest points
         # pygame.draw.circle(screen, (200, 0, 0), self.closest_point, 3)
@@ -114,7 +112,8 @@ class SquareObstacle():
             dist_between_verticies = math.sqrt(math.pow(self.points_xy[_i][0] - self.points_xy[sec_index][0], 2) + math.pow(self.points_xy[_i][1] - self.points_xy[sec_index][1], 2))
 
             # hit corner
-            if dist_to_first < 1 + 10 / self.side_length: 
+            #if dist_to_first < 1 + 10 / self.side_length: 
+            if dist_to_first < 1.5: 
                 distances = self.get_vertex_distances(point)
                 s = set(distances)
                 
@@ -125,7 +124,7 @@ class SquareObstacle():
             # hit edge
             diff = abs(dist_between_verticies - (dist_to_first + dist_to_second))
 
-            if diff < 0.02:
+            if diff < 0.05:
                 return (self.points_xy[_i], self.points_xy[sec_index])
             
         return None
@@ -135,14 +134,14 @@ class CircleObstacle():
     def __init__(self, center_pos: tuple, radius: float):
         self.x, self.y = center_pos
         self.radius = radius
-        self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32) #
+        self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32)
         self.surf = self.surf.convert_alpha()
         self.surf.fill((0, 0, 0, 0))
         
-        self.width = .98
+        self.width = 1
 
         pygame.draw.circle(self.surf, (200, 200, 200, 255), (self.radius, self.radius), radius)
-        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), radius * self.width)
+        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), radius - self.width)
 
         self.rect = self.surf.get_rect(center=(self.x, self.y))
 
@@ -156,8 +155,14 @@ class CircleObstacle():
         if circle_last_hit_cetnerxy == (self.x, self.y): return None
         
         dist_to_center = math.sqrt( math.pow(self.x - point[0], 2) + math.pow(self.y - point[1], 2) )
-        if dist_to_center < self.radius and dist_to_center > self.radius * self.width:
-            return (self.x, self.y)
+
+        if self.radius <= 30:
+            if dist_to_center < self.radius:
+                return (self.x, self.y)
+
+        elif self.radius > 30:
+            if dist_to_center < self.radius and dist_to_center > self.radius - self.width:
+                return (self.x, self.y)
         
         return None
             

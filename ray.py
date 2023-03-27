@@ -18,8 +18,6 @@ class Ray():
 
         self.move_vec = (self.step_size * math.cos(self.dir_rad), self.step_size * math.sin(self.dir_rad))
         self.rays_surface = pygame.Surface(screen_size)
-
-        print("start movement vec:", self.move_vec)
     
         pygame.draw.circle(self.rays_surface, (255,255,255), (self.x, self.y), 1)
 
@@ -41,18 +39,17 @@ class Ray():
         if hit_between_points == None: return False
 
         self.hit_between_points = hit_between_points
-        print("HIt")
 
         # collided
-        normalized_normal = obstacle.find_normal_at_point((self.x, self.y))
+        normalized_normal_vec = obstacle.find_normal_at_point((self.x, self.y))
 
         move_vec_mag = math.sqrt(math.pow(self.x - (self.x + self.move_vec[0]), 2) + math.pow(self.y - (self.y + self.move_vec[1]), 2))
 
         normalized_move = (self.move_vec[0] / move_vec_mag, self.move_vec[1] / move_vec_mag)
 
-        dot = 2 * np.dot(normalized_move, normalized_normal)
-        self.move_vec = ((normalized_move[0] - dot * normalized_normal[0]) * self.step_size,
-                            (normalized_move[1] - dot * normalized_normal[1]) * self.step_size)
+        dot = 2 * np.dot(normalized_move, normalized_normal_vec)
+        self.move_vec = ((normalized_move[0] - dot * normalized_normal_vec[0]) * self.step_size,
+                            (normalized_move[1] - dot * normalized_normal_vec[1]) * self.step_size)
         return True
     
 
