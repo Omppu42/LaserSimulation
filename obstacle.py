@@ -9,6 +9,8 @@ class SquareObstacle():
         self.rotation_deg = rotation_deg
         self.rotation_rad = self.rotation_deg * math.pi/180
 
+        self.selected = False
+
         # self.surf = pygame.Surface((side_length, side_length), pygame.SRCALPHA)
         # self.surf.fill((100,100,100))
         # self.surf = pygame.transform.rotate(self.surf, -self.rotation_deg)
@@ -32,6 +34,17 @@ class SquareObstacle():
             (self.points_xy[0][1] + (self.points_xy[1][1] * 2)) / 3))
 
 
+    def __repr__(self) -> str:
+        return f"Square Obstacle at pos: {self.center_pos} rotation: {self.rotation_deg} side_length: {self.side_length}"
+
+
+    def __vec(self, point1, point2) -> tuple:
+        return ((point2[0] - point1[0]), (point2[1] - point1[1]))
+
+
+    def __dot(self, vec1, vec2) -> float:
+        return (vec1[0] * vec2[0] + vec1[1] * vec2[1])
+
 
     def __rotate_points(self):
         rotation_matrix = [[math.cos(self.rotation_rad), -math.sin(self.rotation_rad)],
@@ -43,6 +56,11 @@ class SquareObstacle():
                            rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
         
         self.points_xy = [(p[0] + self.center_pos[0], p[1] + self.center_pos[1]) for p in rotated_points]
+
+
+    def set_active(self, state: bool) -> None:
+        """Sets selected state"""
+        self.selected = state
 
 
     def find_normal_at_point(self, point: tuple) -> tuple:
@@ -85,8 +103,27 @@ class SquareObstacle():
         return distances
 
 
+
+    def check_clicked(self, point) -> bool:
+        AB = self.__vec(self.points_xy[0], self.points_xy[1])
+        AM = self.__vec(self.points_xy[0], point)
+        BC = self.__vec(self.points_xy[1], self.points_xy[2])
+        BM = self.__vec(self.points_xy[1], point)
+
+        dotABAM = self.__dot(AB, AM)
+        dotABAB = self.__dot(AB, AB)
+        dotBCBM = self.__dot(BC, BM)
+        dotBCBC = self.__dot(BC, BC)
+
+        return (0 <= dotABAM and dotABAM <= dotABAB and
+                 0 <= dotBCBM and dotBCBM <= dotBCBC)
+
+
     def draw(self, screen: pygame.Surface):
-        pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
+        if self.selected:
+            pygame.draw.lines(screen, (250,250,250), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
+        else:
+            pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
 
         # normal
         # pygame.draw.circle(screen, (200, 200, 200), self.temp_draw_point, 2)
@@ -139,16 +176,36 @@ class CircleObstacle():
         self.surf.fill((0, 0, 0, 0))
         
         self.width = 1
+        self.selected = False
 
-        pygame.draw.circle(self.surf, (200, 200, 200, 255), (self.radius, self.radius), radius)
-        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), radius - self.width)
+        self.redraw_surf()
 
         self.rect = self.surf.get_rect(center=(self.x, self.y))
 
     
+    def __repr__(self) -> str:
+        return f"Circle Obstacle at pos: ({self.x}, {self.y}) radius: {self.radius}"
+
+
+    def set_active(self, state: bool) -> None:
+        """Sets selected state"""
+        self.selected = state
+        self.redraw_surf()
+
+    def redraw_surf(self) -> None:
+        col = (250, 250, 250, 255) if self.selected else (180, 180, 180, 255)
+        pygame.draw.circle(self.surf, col, (self.radius, self.radius), self.radius)
+        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), self.radius - self.width)
+
+
     def draw(self, screen: pygame.Surface):
         screen.blit(self.surf, self.rect)
 
+
+    def check_clicked(self, point) -> bool:
+        dist_to_center = math.sqrt( math.pow(self.x - point[0], 2) + math.pow(self.y - point[1], 2) )
+        return dist_to_center < self.radius
+    
 
     def check_collision(self, point: tuple, circle_last_hit_cetnerxy: tuple) -> tuple | None:
         """If point inside circle, return tuple of circle's center x and y. Else return None"""
