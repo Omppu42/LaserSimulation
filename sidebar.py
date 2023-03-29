@@ -32,7 +32,7 @@ class Sidebar():
             if index == self.selected_index: continue
 
             # check if clicked
-            if ostacle.check_clicked(mouse_pos):
+            if ostacle.check_point_inside(mouse_pos):
                 self.selected_index = self.all_obstacles.index(ostacle)
                 break
         else:

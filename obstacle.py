@@ -66,7 +66,6 @@ class SquareObstacle():
     def find_normal_at_point(self, point: tuple) -> tuple:
         """Returns a vector containing the surface's normal from the point of impact"""
 
-        self.temp_draw_point = point
         distances = self.get_vertex_distances(point)
 
         s = set(distances)
@@ -79,6 +78,9 @@ class SquareObstacle():
 
         self.closest_point = lowers_point
         self.second_closest_point = second_lowers_point
+
+        point = self.get_closest_point(self.closest_point, self.second_closest_point, point)
+        self.temp_draw_point = point
 
         vec = (second_lowers_point[0] - lowers_point[0], second_lowers_point[1] - lowers_point[1])
         vec = (vec[1] + point[0], -vec[0] + point[1])
@@ -103,8 +105,21 @@ class SquareObstacle():
         return distances
 
 
+    def get_closest_point(self, A, B, P) -> tuple:
+        a_to_p = [P[0] - A[0], P[1] - A[1]]     # Storing vector A->P
+        a_to_b = [B[0] - A[0], B[1] - A[1]]     # Storing vector A->B
 
-    def check_clicked(self, point) -> bool:
+        atb2 = a_to_b[0]**2 + a_to_b[1]**2 # distance squared
+
+        atp_dot_atb = a_to_p[0]*a_to_b[0] + a_to_p[1]*a_to_b[1] # The dot product of a_to_p and a_to_b
+
+        t = atp_dot_atb / atb2              # The normalized distance from a to your closest point 
+
+        return (A[0] + a_to_b[0]*t, A[1] + a_to_b[1]*t)
+
+
+    def check_point_inside(self, point: tuple) -> bool:
+        # TODO: Better performance can be achieved by removing function call overhead, just paste lines into here. Will look bad though
         AB = self.__vec(self.points_xy[0], self.points_xy[1])
         AM = self.__vec(self.points_xy[0], point)
         BC = self.__vec(self.points_xy[1], self.points_xy[2])
@@ -134,6 +149,7 @@ class SquareObstacle():
         # pygame.draw.circle(screen, (200, 0, 0), self.second_closest_point, 3)
 
 
+    #FIXME: Not used, remove if not needed
     def check_point_on_edge(self, point: tuple, points_to_discard: tuple) -> tuple:
         """Takes point to check collision with and points that were hit last time.\n 
         Return two points from self.points_xy if hit between them"""
@@ -207,25 +223,21 @@ class CircleObstacle():
         return dist_to_center < self.radius
     
 
-    def check_collision(self, point: tuple, circle_last_hit_cetnerxy: tuple) -> tuple | None:
-        """If point inside circle, return tuple of circle's center x and y. Else return None"""
-        if circle_last_hit_cetnerxy == (self.x, self.y): return None
-        
+    def check_point_inside(self, point: tuple) -> bool:
+        """If point inside circle"""
         dist_to_center = math.sqrt( math.pow(self.x - point[0], 2) + math.pow(self.y - point[1], 2) )
 
-        if self.radius <= 30:
-            if dist_to_center < self.radius:
-                return (self.x, self.y)
+        if dist_to_center < self.radius:
+            return True
 
-        elif self.radius > 30:
-            if dist_to_center < self.radius and dist_to_center > self.radius - self.width:
-                return (self.x, self.y)
-        
-        return None
+        return False
             
     
     def find_normal_at_point(self, point: tuple) -> tuple:
+        #FIXME: Find nearest point on the edge and use that in calculating. See square obstacles's find_normal_at_point() get_closest_point()
+
         normal = (point[0] - self.x, point[1] - self.y)
+
 
         length = math.sqrt( math.pow(normal[0], 2) + math.pow(normal[1], 2) )
         normal = (normal[0] / length, normal[1] / length)
