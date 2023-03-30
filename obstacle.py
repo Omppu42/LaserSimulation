@@ -65,31 +65,26 @@ class SquareObstacle():
 
     def find_normal_at_point(self, point: tuple) -> tuple:
         """Returns a vector containing the surface's normal from the point of impact"""
-
         distances = self.get_vertex_distances(point)
-
         s = set(distances)
         
         # used to convert any of the list/tuple to the distinct element and sorted sequence of elements
         min_dist, second_min_dist = sorted(s)[0], sorted(s)[1]
 
-        lowers_point = self.points_xy[distances.index(min_dist)]
-        second_lowers_point = self.points_xy[distances.index(second_min_dist)]
-
-        self.closest_point = lowers_point
-        self.second_closest_point = second_lowers_point
+        self.closest_point = self.points_xy[distances.index(min_dist)]
+        self.second_closest_point = self.points_xy[distances.index(second_min_dist)]
 
         point = self.get_closest_point(self.closest_point, self.second_closest_point, point)
-        self.temp_draw_point = point
 
-        vec = (second_lowers_point[0] - lowers_point[0], second_lowers_point[1] - lowers_point[1])
+        vec = (self.second_closest_point[0] - self.closest_point[0], self.second_closest_point[1] - self.closest_point[1])
         vec = (vec[1] + point[0], -vec[0] + point[1])
 
+        # visualizing
+        self.temp_draw_point = point
         self.normal = vec
 
         vec_mag = math.sqrt( math.pow(vec[0] - point[0], 2) + math.pow(vec[1] - point[1], 2))
         
-
         vec = ((vec[0] - point[0]) / vec_mag, 
                (vec[1] - point[1]) / vec_mag)
 
@@ -106,6 +101,7 @@ class SquareObstacle():
 
 
     def get_closest_point(self, A, B, P) -> tuple:
+        """Get closest point on the edge AB from point P"""
         a_to_p = [P[0] - A[0], P[1] - A[1]]     # Storing vector A->P
         a_to_b = [B[0] - A[0], B[1] - A[1]]     # Storing vector A->B
 
@@ -119,6 +115,7 @@ class SquareObstacle():
 
 
     def check_point_inside(self, point: tuple) -> bool:
+        """Check if point is inside the sqare"""
         # TODO: Better performance can be achieved by removing function call overhead, just paste lines into here. Will look bad though
         AB = self.__vec(self.points_xy[0], self.points_xy[1])
         AM = self.__vec(self.points_xy[0], point)
@@ -140,6 +137,7 @@ class SquareObstacle():
         else:
             pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
 
+        # DEBUGGING VISUALS
         # normal
         # pygame.draw.circle(screen, (200, 200, 200), self.temp_draw_point, 2)
         # pygame.draw.line(screen, (255,255,255), self.temp_draw_point, self.normal)
@@ -147,37 +145,7 @@ class SquareObstacle():
         # closest points
         # pygame.draw.circle(screen, (200, 0, 0), self.closest_point, 3)
         # pygame.draw.circle(screen, (200, 0, 0), self.second_closest_point, 3)
-
-
-    #FIXME: Not used, remove if not needed
-    def check_point_inside_(self, point: tuple) -> bool:
-        """Takes point to check collision with and points that were hit last time.\n 
-        Return two points from self.points_xy if hit between them"""
-        for _i in range(4):
-            sec_index = (_i + 1) % 4
-            
-            dist_to_first =          math.sqrt(math.pow(point[0] - self.points_xy[_i][0], 2)                  + math.pow(point[1] - self.points_xy[_i][1], 2))
-            dist_to_second =         math.sqrt(math.pow(point[0] - self.points_xy[sec_index][0], 2)              + math.pow(point[1] - self.points_xy[sec_index][1], 2))
-            dist_between_verticies = math.sqrt(math.pow(self.points_xy[_i][0] - self.points_xy[sec_index][0], 2) + math.pow(self.points_xy[_i][1] - self.points_xy[sec_index][1], 2))
-
-            # hit corner
-            #if dist_to_first < 1 + 10 / self.side_length: 
-            if dist_to_first < 2: 
-                distances = self.get_vertex_distances(point)
-                s = set(distances)
-                
-                # used to convert any of the list/tuple to the distinct element and sorted sequence of elements
-                second_min_dist = sorted(s)[1]
-                return (self.points_xy[_i], self.points_xy[distances.index(second_min_dist)])
-
-            # hit edge
-            diff = abs(dist_between_verticies - (dist_to_first + dist_to_second))
-
-            if diff < 0.025:
-                return True
-            
-        return False
-    
+        
 
 class CircleObstacle():
     def __init__(self, center_pos: tuple, radius: float):

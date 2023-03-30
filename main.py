@@ -12,7 +12,8 @@ from sidebar import Sidebar
 
 pygame.init()
 
-#TODO: To improve performance, detect square collision with check_clicked() instead of check_point_on_edge(). That way the laser can never be inside, but we don't need that
+#TODO: Move each obstacle class into its own file
+#TODO: Sidebar editing obstacles before starting
 
 def main():
     background_colour = (0, 0, 0)
