@@ -42,7 +42,7 @@ class Ray():
 
         #if obstacle == self.last_object_hit: return
 
-        if not obstacle.check_point_inside((self.x, self.y)): return
+        if not obstacle.check_point_inside((self.x + self.move_vec[0], self.y + self.move_vec[1])): return
 
         self.last_object_hit = obstacle
 

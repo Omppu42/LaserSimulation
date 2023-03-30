@@ -150,15 +150,11 @@ class SquareObstacle():
 
 
     #FIXME: Not used, remove if not needed
-    def check_point_on_edge(self, point: tuple, points_to_discard: tuple) -> tuple:
+    def check_point_inside_(self, point: tuple) -> bool:
         """Takes point to check collision with and points that were hit last time.\n 
         Return two points from self.points_xy if hit between them"""
         for _i in range(4):
             sec_index = (_i + 1) % 4
-
-            if not points_to_discard == None: 
-                if self.points_xy[_i] == points_to_discard[0] and self.points_xy[sec_index] == points_to_discard[1]: continue
-
             
             dist_to_first =          math.sqrt(math.pow(point[0] - self.points_xy[_i][0], 2)                  + math.pow(point[1] - self.points_xy[_i][1], 2))
             dist_to_second =         math.sqrt(math.pow(point[0] - self.points_xy[sec_index][0], 2)              + math.pow(point[1] - self.points_xy[sec_index][1], 2))
@@ -177,10 +173,10 @@ class SquareObstacle():
             # hit edge
             diff = abs(dist_between_verticies - (dist_to_first + dist_to_second))
 
-            if diff < 0.05:
-                return (self.points_xy[_i], self.points_xy[sec_index])
+            if diff < 0.025:
+                return True
             
-        return None
+        return False
     
 
 class CircleObstacle():
@@ -195,7 +191,6 @@ class CircleObstacle():
         self.selected = False
 
         self.redraw_surf()
-
         self.rect = self.surf.get_rect(center=(self.x, self.y))
 
     
@@ -234,10 +229,13 @@ class CircleObstacle():
             
     
     def find_normal_at_point(self, point: tuple) -> tuple:
-        #FIXME: Find nearest point on the edge and use that in calculating. See square obstacles's find_normal_at_point() get_closest_point()
 
-        normal = (point[0] - self.x, point[1] - self.y)
+        mag = math.sqrt( math.pow(point[0] - self.x, 2) + math.pow(point[1] - self.y, 2) )
 
+        Cx = self.x + self.radius * ( (point[0] - self.x) / mag )
+        Cy = self.y + self.radius * ( (point[1] - self.y) / mag )
+
+        normal = (Cx - self.x, Cy - self.y)
 
         length = math.sqrt( math.pow(normal[0], 2) + math.pow(normal[1], 2) )
         normal = (normal[0] / length, normal[1] / length)

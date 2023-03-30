@@ -1,9 +1,14 @@
-import pygame
 import cProfile
+
+import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+
+import pygame
 
 from ray import Ray
 from obstacle import SquareObstacle, CircleObstacle
 from sidebar import Sidebar
+
 
 pygame.init()
 
@@ -21,10 +26,10 @@ def main():
     pygame.display.set_caption('Lazer Simulation')
 
     obstacles_square = [SquareObstacle((300, 300), 100, 30), SquareObstacle((600, 150), 100, 60), 
-                        SquareObstacle((600, 300), 50, 85), 
+                        SquareObstacle((600, 300), 50, 85), SquareObstacle((500, 480), 40, 20),
                         SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70)]
 
-    obstacles_circle = [CircleObstacle(( 440, 250), 49), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
+    obstacles_circle = [CircleObstacle(( 440, 250), 50), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
 
     all_obstacles = obstacles_circle + obstacles_square
 
@@ -52,7 +57,6 @@ def main():
                 for obs in all_obstacles:
                     if ray.check_collision(obs):
                         num_colls += 1
-                        break
 
                 ray.move()
                 current_step += 1
