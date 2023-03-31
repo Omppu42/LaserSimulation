@@ -13,7 +13,10 @@ from sidebar import Sidebar
 pygame.init()
 
 #TODO: Move each obstacle class into its own file
-#TODO: Sidebar editing obstacles before starting
+#TODO: Press 'x' to delete the obstacle when selected
+#TODO: Make sidebar into a debug window: show xy, number of collisions, fps
+#TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
+#TODO: Add buttons for spawning sqares and circles
 
 def main():
     background_colour = (0, 0, 0)
@@ -45,13 +48,13 @@ def main():
 
     num_colls = 0
 
-    updates_at_a_time = 50
+    updates_at_a_time = 5
 
     while running:
         screen.fill(background_colour)
 
         # Move ray
-        if current_step < total_steps:
+        if sidebar.update_ray and current_step < total_steps:
             for _ in range(updates_at_a_time):
 
                 # Check collisions
@@ -80,15 +83,20 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            if event.type == pygame.MOUSEBUTTONUP:
+                sidebar.check_mouse_up()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
                     sidebar.check_click(pygame.mouse.get_pos())
-                 
+
+            if event.type == pygame.MOUSEMOTION:
+                sidebar.mouse_motion(event)
+
 
         pygame.display.update()
-        clock.tick(600)
+        clock.tick(60)
 
-    
 
 if __name__ == "__main__":
     profile = False

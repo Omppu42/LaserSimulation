@@ -1,6 +1,6 @@
 import pygame
 from obstacle import CircleObstacle, SquareObstacle
-
+from button import Button
 
 pygame.init()
 
@@ -21,12 +21,40 @@ class Sidebar():
         self.surf = pygame.Surface((self.w, self.h))
         self.surf.fill((10, 10, 10))
 
+        self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start", font_size=32)
+        self.update_ray = False
+
     def draw(self) -> None:
         self.screen.blit(self.surf, (self.x, self.y))
-        # TODO: Draw configuration settings when needed to configure the objects
+        
+        if not self.update_ray:
+            self.play_button.draw(self.screen)
 
+
+    def mouse_motion(self, event) -> None:
+        if self.update_ray: return
+
+        self.play_button.check_hover(pygame.mouse.get_pos())
+        
+        if pygame.mouse.get_pressed()[0]:
+            if self.selected_index != -1:
+                
+                mouse_moved = pygame.mouse.get_rel()
+                self.all_obstacles[self.selected_index].move_by(mouse_moved)
+
+
+    def check_mouse_up(self) -> None:
+        self.selected_index = -1
+        self.update_obstacle_status()
 
     def check_click(self, mouse_pos: tuple) -> None:
+        if self.update_ray: return
+
+        pygame.mouse.get_rel()
+
+        if self.play_button.check_click():
+            self.update_ray = not self.update_ray
+
         for index, ostacle in enumerate(self.all_obstacles):
             # already selected
             if index == self.selected_index: continue
@@ -38,7 +66,11 @@ class Sidebar():
         else:
             # didn't click any
             self.selected_index = -1
-        
+
+        self.update_obstacle_status()
+
+
+    def update_obstacle_status(self):
         # update selected status
         for index, obstacle in enumerate(self.all_obstacles):
             if index == self.selected_index:

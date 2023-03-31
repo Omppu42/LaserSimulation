@@ -4,28 +4,18 @@ pygame.init()
 
 class SquareObstacle():
     def __init__(self, center_pos: tuple, side_length: float, rotation_deg: float):
-        self.center_pos = center_pos
+        self.x, self.y = center_pos
         self.side_length = side_length
         self.rotation_deg = rotation_deg
         self.rotation_rad = self.rotation_deg * math.pi/180
 
         self.selected = False
-
-        # self.surf = pygame.Surface((side_length, side_length), pygame.SRCALPHA)
-        # self.surf.fill((100,100,100))
-        # self.surf = pygame.transform.rotate(self.surf, -self.rotation_deg)
-        # self.rect = self.surf.get_rect(center=(self.center_pos))
-
-        self.points_xy = [(center_pos[0] - side_length, center_pos[1] - side_length),
-                          (center_pos[0] - side_length, center_pos[1] + side_length),
-                          (center_pos[0] + side_length, center_pos[1] + side_length),
-                          (center_pos[0] + side_length, center_pos[1] - side_length)]
         
-        self.__rotate_points()
+        self.__setup_points()
 
-        # print("Center:", center_pos, "Side length:", side_length)
-        # print(self.points_xy)
+        # visualizing
         self.temp_draw_point = (0,0)
+
         self.closest_point = (0,0)
         self.second_closest_point = (0,0)
 
@@ -35,7 +25,7 @@ class SquareObstacle():
 
 
     def __repr__(self) -> str:
-        return f"Square Obstacle at pos: {self.center_pos} rotation: {self.rotation_deg} side_length: {self.side_length}"
+        return f"Square Obstacle at pos: ({self.x}, {self.y}) rotation: {self.rotation_deg} side_length: {self.side_length}"
 
 
     def __vec(self, point1, point2) -> tuple:
@@ -46,16 +36,29 @@ class SquareObstacle():
         return (vec1[0] * vec2[0] + vec1[1] * vec2[1])
 
 
-    def __rotate_points(self):
+    def __setup_points(self):
+        self.points_xy = [(self.x - self.side_length, self.y - self.side_length),
+                          (self.x - self.side_length, self.y + self.side_length),
+                          (self.x + self.side_length, self.y + self.side_length),
+                          (self.x + self.side_length, self.y - self.side_length)]
+
         rotation_matrix = [[math.cos(self.rotation_rad), -math.sin(self.rotation_rad)],
                            [math.sin(self.rotation_rad),  math.cos(self.rotation_rad)]]
         
-        translated_points = [(p[0] - self.center_pos[0], p[1] - self.center_pos[1]) for p in self.points_xy]
+        translated_points = [(p[0] - self.x, p[1] - self.y) for p in self.points_xy]
 
         rotated_points = [(rotation_matrix[0][0]*p[0] + rotation_matrix[0][1]*p[1], 
                            rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
         
-        self.points_xy = [(p[0] + self.center_pos[0], p[1] + self.center_pos[1]) for p in rotated_points]
+        self.points_xy = [(p[0] + self.x, p[1] + self.y) for p in rotated_points]
+
+
+    def move_by(self, amount: tuple) -> None:
+        """Move the whole square in a direction"""
+        self.x += amount[0]
+        self.y += amount[1]
+
+        self.__setup_points()
 
 
     def set_active(self, state: bool) -> None:
@@ -145,12 +148,13 @@ class SquareObstacle():
         # closest points
         # pygame.draw.circle(screen, (200, 0, 0), self.closest_point, 3)
         # pygame.draw.circle(screen, (200, 0, 0), self.second_closest_point, 3)
-        
+
 
 class CircleObstacle():
     def __init__(self, center_pos: tuple, radius: float):
         self.x, self.y = center_pos
         self.radius = radius
+
         self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32)
         self.surf = self.surf.convert_alpha()
         self.surf.fill((0, 0, 0, 0))
@@ -158,23 +162,33 @@ class CircleObstacle():
         self.width = 1
         self.selected = False
 
-        self.redraw_surf()
-        self.rect = self.surf.get_rect(center=(self.x, self.y))
-
+        self.__redraw_surf()
+        
     
     def __repr__(self) -> str:
         return f"Circle Obstacle at pos: ({self.x}, {self.y}) radius: {self.radius}"
 
 
-    def set_active(self, state: bool) -> None:
-        """Sets selected state"""
-        self.selected = state
-        self.redraw_surf()
-
-    def redraw_surf(self) -> None:
+    def __redraw_surf(self) -> None:
         col = (250, 250, 250, 255) if self.selected else (180, 180, 180, 255)
         pygame.draw.circle(self.surf, col, (self.radius, self.radius), self.radius)
         pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), self.radius - self.width)
+        self.rect = self.surf.get_rect(center=(self.x, self.y))
+
+
+    def move_by(self, amount: tuple) -> None:
+        """Move the whole square in a direction"""
+        self.x += amount[0]
+        self.y += amount[1]
+
+        self.__redraw_surf()
+
+
+    def set_active(self, state: bool) -> None:
+        """Sets selected state"""
+        self.selected = state
+        self.__redraw_surf()
+
 
 
     def draw(self, screen: pygame.Surface):
@@ -197,7 +211,7 @@ class CircleObstacle():
             
     
     def find_normal_at_point(self, point: tuple) -> tuple:
-
+        # offset point onto the edge of the circle
         mag = math.sqrt( math.pow(point[0] - self.x, 2) + math.pow(point[1] - self.y, 2) )
 
         Cx = self.x + self.radius * ( (point[0] - self.x) / mag )
