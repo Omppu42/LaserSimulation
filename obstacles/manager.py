@@ -1,5 +1,5 @@
-from obstacle_square import SquareObstacle
-from obstacle_circle import CircleObstacle
+from square import SquareObstacle
+from circle import CircleObstacle
 
 class ObstacleManager():
     def __init__(self) -> None:
@@ -23,4 +23,4 @@ class ObstacleManager():
             obs.draw(screen)
 
 
-obstacle_manager_instance = ObstacleManager()
+obstacle_manager = ObstacleManager()

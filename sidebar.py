@@ -1,8 +1,7 @@
 import pygame
-from obstacle_square import SquareObstacle
-from obstacle_circle import CircleObstacle
+
+from obstacles.manager import obstacle_manager
 from button import Button
-from obstacle_manager import obstacle_manager_instance
 
 pygame.init()
 
@@ -36,7 +35,7 @@ class Sidebar():
             if self.selected_index != -1:
                 
                 mouse_moved = pygame.mouse.get_rel()
-                obstacle_manager_instance.get_obstacles()[self.selected_index].move_by(mouse_moved)
+                obstacle_manager.get_obstacles()[self.selected_index].move_by(mouse_moved)
 
 
     def check_mouse_up(self) -> None:
@@ -51,13 +50,13 @@ class Sidebar():
         if self.play_button.check_click():
             self.update_ray = not self.update_ray
 
-        for index, ostacle in enumerate(obstacle_manager_instance.get_obstacles()):
+        for index, ostacle in enumerate(obstacle_manager.get_obstacles()):
             # already selected
             if index == self.selected_index: continue
 
             # check if clicked
             if ostacle.check_point_inside(mouse_pos):
-                self.selected_index = obstacle_manager_instance.get_obstacles().index(ostacle)
+                self.selected_index = obstacle_manager.get_obstacles().index(ostacle)
                 break
         else:
             # didn't click any
@@ -68,7 +67,7 @@ class Sidebar():
 
     def update_obstacle_status(self):
         # update selected status
-        for index, obstacle in enumerate(obstacle_manager_instance.get_obstacles()):
+        for index, obstacle in enumerate(obstacle_manager.get_obstacles()):
             if index == self.selected_index:
                 obstacle.set_active(True)
             else:

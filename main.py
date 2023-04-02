@@ -1,9 +1,9 @@
-import cProfile
-import os
+import cProfile, os
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import pygame
 pygame.init()
+
 
 def main():
     width, height = 1100, 800
@@ -12,7 +12,8 @@ def main():
 
     from ray import Ray
     from sidebar import Sidebar
-    from obstacle_manager import obstacle_manager_instance
+    from obstacles.manager import obstacle_manager
+    from stats import stats
 
     #TODO: Press 'x' to delete the obstacle when selected
     #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
@@ -32,32 +33,24 @@ def main():
     running = True
 
     total_steps = 500000
-    current_step = 0
-
-    num_colls = 0
-
     updates_at_a_time = 5
 
     while running:
         screen.fill(background_colour)
 
         # Move ray
-        if sidebar.update_ray and current_step < total_steps:
+        if sidebar.update_ray and stats.current_ray_step < total_steps:
             for _ in range(updates_at_a_time):
 
                 # Check collisions
-                for obs in obstacle_manager_instance.get_obstacles():
-                    if ray.check_collision(obs):
-                        num_colls += 1
-
+                ray.check_collisions()
                 ray.move()
-                current_step += 1
+                
+                stats.current_ray_step += 1
 
         # Draw
         ray.draw_ray(screen)        
-        
-        obstacle_manager_instance.draw_obstacles(screen)
-
+        obstacle_manager.draw_obstacles(screen)
         sidebar.draw()
 
         fps = font.render(str(round(clock.get_fps())), True, (255, 0, 0))

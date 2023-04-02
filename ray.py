@@ -1,9 +1,12 @@
 import math
 import pygame
-
 import numpy as np
-from obstacle_square import SquareObstacle
-from obstacle_circle import CircleObstacle
+
+from obstacles.square import SquareObstacle
+from obstacles.circle import CircleObstacle
+from obstacles.manager import obstacle_manager
+from stats import stats
+
 pygame.init()
 
 class Ray():
@@ -34,22 +37,16 @@ class Ray():
         self.y += self.move_vec[1]
         self.calculate_ray()
 
-    def check_collision(self, obstacle: SquareObstacle | CircleObstacle) -> bool:
-        # hit_between_points = obstacle.check_point_on_edge((self.x, self.y), self.hit_between_points)
-        # if hit_between_points == None: return False
+    def check_collisions(self) -> None:
+        for obs in obstacle_manager.get_obstacles():
+            if not obs.check_point_inside((self.x + self.move_vec[0], self.y + self.move_vec[1])): continue
 
-        # self.hit_between_points = hit_between_points
+            self.last_object_hit = obs
 
-        #if obstacle == self.last_object_hit: return
-
-        if not obstacle.check_point_inside((self.x + self.move_vec[0], self.y + self.move_vec[1])): return
-
-        self.last_object_hit = obstacle
-
-        # collided
-        normalized_normal = obstacle.find_normal_at_point((self.x, self.y))
-        self.calculate_bounce_angle(normalized_normal)
-        return True
+            # collided
+            normalized_normal = obs.find_normal_at_point((self.x, self.y))
+            self.calculate_bounce_angle(normalized_normal)
+            stats.num_collisions += 1
     
 
     def calculate_bounce_angle(self, normal: tuple) -> None:
