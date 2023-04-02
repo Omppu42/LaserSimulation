@@ -1,43 +1,31 @@
 import cProfile
-
 import os
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import pygame
-
-from ray import Ray
-from obstacle_square import SquareObstacle
-from obstacle_circle import CircleObstacle
-from sidebar import Sidebar
-
-
 pygame.init()
 
-#TODO: Press 'x' to delete the obstacle when selected
-#TODO: Make sidebar into a debug window: show xy, number of collisions, fps
-#TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
-#TODO: Add buttons for spawning sqares and circles
-
 def main():
-    background_colour = (0, 0, 0)
     width, height = 1100, 800
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption('Lazer Simulation')
+
+    from ray import Ray
+    from sidebar import Sidebar
+    from obstacle_manager import obstacle_manager_instance
+
+    #TODO: Press 'x' to delete the obstacle when selected
+    #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
+    #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
+    #TODO: Add buttons for spawning sqares and circles
+
+    background_colour = (0, 0, 0)
     sidebar_width = 300
 
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 32)
-    
-    screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption('Lazer Simulation')
 
-    obstacles_square = [SquareObstacle((300, 300), 100, 30), SquareObstacle((600, 150), 100, 60), 
-                        SquareObstacle((600, 300), 50, 85), SquareObstacle((500, 480), 40, 20),
-                        SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70)]
-
-    obstacles_circle = [CircleObstacle(( 440, 250), 50), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
-
-    all_obstacles = obstacles_circle + obstacles_square
-
-    sidebar = Sidebar((width - sidebar_width, 0), (sidebar_width, height), screen, obstacles_square, obstacles_circle)
+    sidebar = Sidebar((width - sidebar_width, 0), (sidebar_width, height), screen)
     ray = Ray((400, 400), (width - sidebar_width, height), 260)
     ray.calculate_ray()
 
@@ -58,7 +46,7 @@ def main():
             for _ in range(updates_at_a_time):
 
                 # Check collisions
-                for obs in all_obstacles:
+                for obs in obstacle_manager_instance.get_obstacles():
                     if ray.check_collision(obs):
                         num_colls += 1
 
@@ -66,13 +54,10 @@ def main():
                 current_step += 1
 
         # Draw
-        ray.draw_ray(screen)
+        ray.draw_ray(screen)        
+        
+        obstacle_manager_instance.draw_obstacles(screen)
 
-        for obs in obstacles_square:
-            obs.draw(screen)
-        for obs in obstacles_circle:
-            obs.draw(screen)
-            
         sidebar.draw()
 
         fps = font.render(str(round(clock.get_fps())), True, (255, 0, 0))

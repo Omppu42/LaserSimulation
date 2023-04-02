@@ -2,21 +2,16 @@ import pygame
 from obstacle_square import SquareObstacle
 from obstacle_circle import CircleObstacle
 from button import Button
+from obstacle_manager import obstacle_manager_instance
 
 pygame.init()
 
 class Sidebar():
-    def __init__(self, pos: tuple, size: tuple, screen: pygame.Surface, square_obtacles: list[SquareObstacle], circle_obstacles: list[CircleObstacle]) -> None:
+    def __init__(self, pos: tuple, size: tuple, screen: pygame.Surface) -> None:
         self.x, self.y = pos
         self.w, self.h = size
         self.screen = screen
-        self.square_obtacles = square_obtacles
-        self.circle_obstacles = circle_obstacles
 
-        self.square_obtacles.sort(key=lambda x: x.side_length)
-        self.circle_obstacles.sort(key=lambda x: x.radius)
-
-        self.all_obstacles = self.circle_obstacles + self.square_obtacles
         self.selected_index = -1
 
         self.surf = pygame.Surface((self.w, self.h))
@@ -41,7 +36,7 @@ class Sidebar():
             if self.selected_index != -1:
                 
                 mouse_moved = pygame.mouse.get_rel()
-                self.all_obstacles[self.selected_index].move_by(mouse_moved)
+                obstacle_manager_instance.get_obstacles()[self.selected_index].move_by(mouse_moved)
 
 
     def check_mouse_up(self) -> None:
@@ -56,13 +51,13 @@ class Sidebar():
         if self.play_button.check_click():
             self.update_ray = not self.update_ray
 
-        for index, ostacle in enumerate(self.all_obstacles):
+        for index, ostacle in enumerate(obstacle_manager_instance.get_obstacles()):
             # already selected
             if index == self.selected_index: continue
 
             # check if clicked
             if ostacle.check_point_inside(mouse_pos):
-                self.selected_index = self.all_obstacles.index(ostacle)
+                self.selected_index = obstacle_manager_instance.get_obstacles().index(ostacle)
                 break
         else:
             # didn't click any
@@ -73,7 +68,7 @@ class Sidebar():
 
     def update_obstacle_status(self):
         # update selected status
-        for index, obstacle in enumerate(self.all_obstacles):
+        for index, obstacle in enumerate(obstacle_manager_instance.get_obstacles()):
             if index == self.selected_index:
                 obstacle.set_active(True)
             else:
