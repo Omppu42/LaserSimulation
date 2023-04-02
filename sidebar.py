@@ -6,10 +6,9 @@ from button import Button
 pygame.init()
 
 class Sidebar():
-    def __init__(self, pos: tuple, size: tuple, screen: pygame.Surface) -> None:
+    def __init__(self, pos: tuple, size: tuple) -> None:
         self.x, self.y = pos
         self.w, self.h = size
-        self.screen = screen
 
         self.selected_index = -1
 
@@ -19,11 +18,12 @@ class Sidebar():
         self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start", font_size=32)
         self.update_ray = False
 
-    def draw(self) -> None:
-        self.screen.blit(self.surf, (self.x, self.y))
+
+    def draw(self, screen) -> None:
+        screen.blit(self.surf, (self.x, self.y))
         
         if not self.update_ray:
-            self.play_button.draw(self.screen)
+            self.play_button.draw(screen)
 
 
     def mouse_motion(self, event) -> None:
@@ -41,6 +41,7 @@ class Sidebar():
     def check_mouse_up(self) -> None:
         self.selected_index = -1
         self.update_obstacle_status()
+
 
     def check_click(self, mouse_pos: tuple) -> None:
         if self.update_ray: return

@@ -2,10 +2,8 @@ import math
 import pygame
 import numpy as np
 
-from obstacles.square import SquareObstacle
-from obstacles.circle import CircleObstacle
 from obstacles.manager import obstacle_manager
-from stats import stats
+from config.stats import stats
 
 pygame.init()
 

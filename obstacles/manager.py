@@ -1,5 +1,5 @@
-from square import SquareObstacle
-from circle import CircleObstacle
+from obstacles.square import SquareObstacle
+from obstacles.circle import CircleObstacle
 
 class ObstacleManager():
     def __init__(self) -> None:
