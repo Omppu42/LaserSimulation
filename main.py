@@ -13,7 +13,7 @@ def main():
     pygame.display.set_caption('Lazer Simulation')
 
     from ray import Ray
-    from sidebar import Sidebar
+    from gui.sidebar import Sidebar
     from obstacles.manager import obstacle_manager
 
     #TODO: Press 'x' to delete the obstacle when selected
@@ -35,8 +35,8 @@ def main():
         screen.fill(settings.bg_color)
 
         # Move ray
-        if sidebar.update_ray and stats.current_ray_step < settings.total_steps:
-            for _ in range(settings.updates_at_a_time):
+        if stats.updating_ray and stats.current_ray_step < settings.total_steps:
+            for _ in range(settings.ray_updates_per_frame):
 
                 # Check collisions
                 ray.check_collisions()

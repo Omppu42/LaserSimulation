@@ -1,7 +1,8 @@
 import pygame
 
+from gui.button import Button
 from obstacles.manager import obstacle_manager
-from button import Button
+from config.stats import stats
 
 pygame.init()
 
@@ -16,18 +17,17 @@ class Sidebar():
         self.surf.fill((10, 10, 10))
 
         self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start", font_size=32)
-        self.update_ray = False
 
 
     def draw(self, screen) -> None:
         screen.blit(self.surf, (self.x, self.y))
         
-        if not self.update_ray:
+        if not stats.updating_ray:
             self.play_button.draw(screen)
 
 
     def mouse_motion(self, event) -> None:
-        if self.update_ray: return
+        if stats.updating_ray: return
 
         self.play_button.check_hover(pygame.mouse.get_pos())
         
@@ -44,12 +44,12 @@ class Sidebar():
 
 
     def check_click(self, mouse_pos: tuple) -> None:
-        if self.update_ray: return
+        if stats.updating_ray: return
 
         pygame.mouse.get_rel()
 
         if self.play_button.check_click():
-            self.update_ray = not self.update_ray
+            stats.updating_ray = not stats.updating_ray
 
         for index, ostacle in enumerate(obstacle_manager.get_obstacles()):
             # already selected

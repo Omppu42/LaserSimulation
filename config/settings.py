@@ -7,7 +7,7 @@ class Settings():
 
         self.max_fps = 60
         self.total_steps = 500000
-        self.updates_at_a_time = 5
+        self.ray_updates_per_frame = 5
 
 
 settings = Settings()
