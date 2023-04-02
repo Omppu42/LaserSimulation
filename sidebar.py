@@ -1,5 +1,6 @@
 import pygame
-from obstacle import CircleObstacle, SquareObstacle
+from obstacle_square import SquareObstacle
+from obstacle_circle import CircleObstacle
 from button import Button
 
 pygame.init()

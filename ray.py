@@ -2,8 +2,8 @@ import math
 import pygame
 
 import numpy as np
-
-from obstacle import SquareObstacle, CircleObstacle
+from obstacle_square import SquareObstacle
+from obstacle_circle import CircleObstacle
 pygame.init()
 
 class Ray():

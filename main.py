@@ -6,13 +6,13 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
 
 from ray import Ray
-from obstacle import SquareObstacle, CircleObstacle
+from obstacle_square import SquareObstacle
+from obstacle_circle import CircleObstacle
 from sidebar import Sidebar
 
 
 pygame.init()
 
-#TODO: Move each obstacle class into its own file
 #TODO: Press 'x' to delete the obstacle when selected
 #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
 #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
