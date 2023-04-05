@@ -7,7 +7,6 @@ class SquareObstacle():
         self.x, self.y = center_pos
         self.side_length = side_length
         self.rotation_deg = rotation_deg
-        self.rotation_rad = self.rotation_deg * math.pi/180
 
         self.selected = False
         
@@ -37,6 +36,8 @@ class SquareObstacle():
 
 
     def __setup_points(self):
+        self.rotation_rad = self.rotation_deg * math.pi/180
+
         self.points_xy = [(self.x - self.side_length, self.y - self.side_length),
                           (self.x - self.side_length, self.y + self.side_length),
                           (self.x + self.side_length, self.y + self.side_length),
@@ -51,6 +52,19 @@ class SquareObstacle():
                            rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
         
         self.points_xy = [(p[0] + self.x, p[1] + self.y) for p in rotated_points]
+
+
+    def scale_self(self, change) -> None:
+        # min and max sidelength
+        if self.side_length + change < 5 or self.side_length + change > 200: return
+
+        self.side_length += change
+        self.__setup_points()
+
+
+    def rotate_self(self, change) -> None:
+        self.rotation_deg += change
+        self.__setup_points()
 
 
     def move_by(self, amount: tuple) -> None:

@@ -5,9 +5,13 @@ class Settings():
         self.sidebar_width = 300
         self.bg_color = (0, 0, 0)
 
-        self.max_fps = 60
+        self.profile = False
+
+        self.start_fps_limit = 60
+
+        self.max_fps = 600
         self.total_steps = 500000
-        self.ray_updates_per_frame = 5
+        self.ray_updates_per_frame = 50
 
 
 settings = Settings()

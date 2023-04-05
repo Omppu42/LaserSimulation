@@ -16,7 +16,8 @@ def main():
     from gui.sidebar import Sidebar
     from obstacles.manager import obstacle_manager
 
-    #TODO: Press 'x' to delete the obstacle when selected
+    #TODO: Add direction arrow to ray spawn point to indicate the direction
+    
     #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
     #TODO: Add buttons for spawning sqares and circles
@@ -45,37 +46,50 @@ def main():
                 stats.current_ray_step += 1
 
         # Draw
-        ray.draw_ray(screen)        
+        ray.draw_ray(screen)
         obstacle_manager.draw_obstacles(screen)
         sidebar.draw(screen)
 
         fps = font.render(str(round(clock.get_fps())), True, (255, 0, 0))
         screen.blit(fps, (10,10))
 
+
         # Pygame Events
+        obstacle_manager.check_keys_held()
+
         for event in pygame.event.get():
+            obstacle_manager.handle_events(event)
+            
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.MOUSEBUTTONUP:
-                sidebar.check_mouse_up()
+                obstacle_manager.check_mouse_up()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
-                    sidebar.check_click(pygame.mouse.get_pos())
+                    sidebar.check_click()
+                    obstacle_manager.check_click(pygame.mouse.get_pos())
 
             if event.type == pygame.MOUSEMOTION:
-                sidebar.mouse_motion(event)
+                sidebar.check_mouse_motion()
+                obstacle_manager.mouse_motion()
 
 
         pygame.display.update()
-        clock.tick(settings.max_fps)
+
+        if stats.updating_ray:
+            # Clicked start button
+            clock.tick(settings.max_fps)
+        else:
+            # Config mode
+            clock.tick(settings.start_fps_limit)
 
 
 if __name__ == "__main__":
-    profile = False
+    from config.settings import settings
 
-    if profile:
+    if settings.profile:
         pr = cProfile.Profile()
         pr.enable()
 

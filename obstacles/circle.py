@@ -6,10 +6,6 @@ class CircleObstacle():
     def __init__(self, center_pos: tuple, radius: float):
         self.x, self.y = center_pos
         self.radius = radius
-
-        self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32)
-        self.surf = self.surf.convert_alpha()
-        self.surf.fill((0, 0, 0, 0))
         
         self.width = 1
         self.selected = False
@@ -22,6 +18,10 @@ class CircleObstacle():
 
 
     def __redraw_surf(self) -> None:
+        self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32)
+        self.surf = self.surf.convert_alpha()
+        self.surf.fill((0, 0, 0, 0))
+        
         col = (250, 250, 250, 255) if self.selected else (180, 180, 180, 255)
         pygame.draw.circle(self.surf, col, (self.radius, self.radius), self.radius)
         pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), self.radius - self.width)
@@ -41,6 +41,16 @@ class CircleObstacle():
         self.selected = state
         self.__redraw_surf()
 
+
+    def scale_self(self, change) -> None:
+        # min and max scale
+        if self.radius + change < 5 or self.radius + change > 200: return
+        self.radius += change
+        self.__redraw_surf()
+
+
+    def rotate_self(self, change) -> None:
+        pass
 
 
     def draw(self, screen: pygame.Surface):
