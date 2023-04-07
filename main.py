@@ -16,12 +16,9 @@ def main():
     from gui.sidebar import Sidebar
     from obstacles.obstacle_manager import obstacle_manager
 
-    #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
-    #TODO: Add buttons for spawning sqares and circles
 
     clock = pygame.time.Clock()
-    font = pygame.font.Font(settings.global_font_path, 24)
 
     sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
                       (settings.sidebar_width, settings.screen_height))
@@ -65,8 +62,11 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:    
                     obstacle_manager.check_click(pygame.mouse.get_pos())
+                    sidebar.check_click_other()
+
                     if sidebar.check_click_play_button():
                         ray.clear_surface()
+
 
             if event.type == pygame.MOUSEMOTION:
                 sidebar.check_mouse_motion()

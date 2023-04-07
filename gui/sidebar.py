@@ -1,6 +1,7 @@
 import pygame
 
 from gui.button import Button
+from gui.image_button import Image_Button
 from gui.text.text_object import Text_Object
 from gui.text.text_group import Text_Group
 
@@ -21,7 +22,10 @@ class Sidebar():
         self.surf.fill((10, 10, 10))
 
         button_font = pygame.font.Font(settings.global_font_path, 26)
-        self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start Simulation", font=button_font)
+        self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start Simulation", font=button_font, border=2)
+
+        self.spawn_square_button = Image_Button((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
+        self.spawn_circle_button = Image_Button((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
 
         self.init_texts()
 
@@ -68,6 +72,8 @@ class Sidebar():
         if not stats.simulation_running:
             self.render_texts(screen)
             self.play_button.draw(screen)
+            self.spawn_square_button.draw(screen)
+            self.spawn_circle_button.draw(screen)
         else:
             self.__update_texts()
             self.running_texts.render_text(screen)
@@ -99,6 +105,8 @@ class Sidebar():
         if stats.simulation_running == True: return
 
         self.play_button.check_hover(pygame.mouse.get_pos())
+        self.spawn_square_button.check_hover(pygame.mouse.get_pos())
+        self.spawn_circle_button.check_hover(pygame.mouse.get_pos())
 
     def check_click_play_button(self) -> bool:
         if stats.simulation_running == True: return False
@@ -109,6 +117,16 @@ class Sidebar():
         
         return False
     
+
+    def check_click_other(self) -> None:
+        if stats.simulation_running == True: return
+
+        if self.spawn_square_button.check_click():
+            obstacle_manager.spawn_square()
+
+        if self.spawn_circle_button.check_click():
+            obstacle_manager.spawn_circle()
+
     def on_simulation_start(self) -> None:
         stats.simulation_running = True
 

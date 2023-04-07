@@ -12,7 +12,7 @@ class ObstacleManager():
                                     SquareObstacle((600, 300), 50, 85), SquareObstacle((500, 480), 40, 20),
                                     SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70)]
 
-        self.__obstacles_circle = [CircleObstacle(( 440, 250), 200), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
+        self.__obstacles_circle = [CircleObstacle(( 440, 250), 50), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
         
         self.__obstacles_square.sort(key=lambda x: x.radius)
         self.__obstacles_circle.sort(key=lambda x: x.radius)
@@ -63,7 +63,13 @@ class ObstacleManager():
         if keys[pygame.K_RIGHT]:  
             obs.rotate_self(1)
             
-                    
+    
+    def spawn_square(self) -> None:
+        self.__all_obstacles.append(SquareObstacle((400, 399), 50, 0))
+
+    def spawn_circle(self) -> None:
+        self.__all_obstacles.append(CircleObstacle((400, 399), 50))
+
     
     def mouse_motion(self) -> None:
         if stats.simulation_running: return
