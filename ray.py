@@ -19,12 +19,24 @@ class Ray():
         self.rays_surface = pygame.Surface(screen_size)
 
         self.last_object_hit = None
-    
-        pygame.draw.circle(self.rays_surface, (255,255,255), (self.x, self.y), 1)
+
+        pygame.draw.circle(self.rays_surface, (200, 0, 0), (self.x, self.y), 2)
+
+        ROTATION_OFFSET = -90
+
+        dir_arrow = pygame.transform.smoothscale(pygame.image.load("assets/arrow.png"), (64, 64))
+        dir_arrow = pygame.transform.rotate(dir_arrow, -self.dir_deg + ROTATION_OFFSET)
+
+        dir_arrow_rect = dir_arrow.get_rect(center=(self.x, self.y))
+        self.rays_surface.blit(dir_arrow, dir_arrow_rect)
 
 
     def calculate_ray(self) -> None:
         pygame.draw.line(self.rays_surface, (125,0,0), (self.x, self.y), (self.x + self.move_vec[0], self.y + self.move_vec[1]))
+
+
+    def clear_surface(self) -> None:
+        self.rays_surface.fill((0,0,0))
 
 
     def draw_ray(self, screen: pygame.Surface) -> None:

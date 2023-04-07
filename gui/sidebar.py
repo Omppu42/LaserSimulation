@@ -32,8 +32,15 @@ class Sidebar():
 
 
     def check_mouse_motion(self):
+        if stats.updating_ray == True: return
+        
         self.play_button.check_hover(pygame.mouse.get_pos())
 
-    def check_click(self):
+    def check_click_play_button(self) -> bool:
+        if stats.updating_ray == True: return False
+
         if self.play_button.check_click():
-            stats.updating_ray = not stats.updating_ray
+            stats.updating_ray = True
+            return True
+        
+        return False

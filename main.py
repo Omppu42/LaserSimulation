@@ -16,8 +16,6 @@ def main():
     from gui.sidebar import Sidebar
     from obstacles.manager import obstacle_manager
 
-    #TODO: Add direction arrow to ray spawn point to indicate the direction
-    
     #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
     #TODO: Add buttons for spawning sqares and circles
@@ -67,9 +65,10 @@ def main():
                 obstacle_manager.check_mouse_up()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    sidebar.check_click()
+                if pygame.mouse.get_pressed()[0]:    
                     obstacle_manager.check_click(pygame.mouse.get_pos())
+                    if sidebar.check_click_play_button():
+                        ray.clear_surface()
 
             if event.type == pygame.MOUSEMOTION:
                 sidebar.check_mouse_motion()
