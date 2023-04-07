@@ -21,7 +21,7 @@ def main():
     #TODO: Add buttons for spawning sqares and circles
 
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 32)
+    font = pygame.font.Font(settings.global_font_path, 24)
 
     sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
                       (settings.sidebar_width, settings.screen_height))
