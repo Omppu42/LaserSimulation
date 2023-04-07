@@ -67,6 +67,18 @@ class SquareObstacle():
         self.__setup_points()
 
 
+    def get_pos(self) -> int:
+        return (self.x, self.y)
+    
+
+    def get_size(self) -> int:
+        return self.side_length
+
+
+    def get_rotation(self) -> int:
+        return self.rotation_deg
+
+
     def move_by(self, amount: tuple) -> None:
         """Move the whole square in a direction"""
         self.x += amount[0]

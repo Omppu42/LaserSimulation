@@ -42,6 +42,18 @@ class CircleObstacle():
         self.__redraw_surf()
 
 
+    def get_pos(self) -> int:
+        return (self.x, self.y)
+    
+
+    def get_size(self) -> int:
+        return self.radius
+
+
+    def get_rotation(self) -> int:
+        return 0
+
+
     def scale_self(self, change) -> None:
         # min and max scale
         if self.radius + change < 5 or self.radius + change > 200: return

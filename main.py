@@ -14,7 +14,7 @@ def main():
 
     from ray import Ray
     from gui.sidebar import Sidebar
-    from obstacles.manager import obstacle_manager
+    from obstacles.obstacle_manager import obstacle_manager
 
     #TODO: Make sidebar into a debug window: show xy, number of collisions, fps
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
@@ -34,7 +34,7 @@ def main():
         screen.fill(settings.bg_color)
 
         # Move ray
-        if stats.updating_ray and stats.current_ray_step < settings.total_steps:
+        if stats.simulation_running and stats.current_ray_step < settings.total_steps:
             for _ in range(settings.ray_updates_per_frame):
 
                 # Check collisions
@@ -48,9 +48,7 @@ def main():
         obstacle_manager.draw_obstacles(screen)
         sidebar.draw(screen)
 
-        fps = font.render(str(round(clock.get_fps())), True, (255, 0, 0))
-        screen.blit(fps, (10,10))
-
+        stats.fps = round(clock.get_fps())
 
         # Pygame Events
         obstacle_manager.check_keys_held()
@@ -77,7 +75,7 @@ def main():
 
         pygame.display.update()
 
-        if stats.updating_ray:
+        if stats.simulation_running:
             # Clicked start button
             clock.tick(settings.max_fps)
         else:

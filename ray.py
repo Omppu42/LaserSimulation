@@ -2,8 +2,9 @@ import math
 import pygame
 import numpy as np
 
-from obstacles.manager import obstacle_manager
+from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
+from config.settings import settings
 
 pygame.init()
 
@@ -13,9 +14,8 @@ class Ray():
         self.w, self.h = screen_size
         self.dir_deg = dir_deg
         self.dir_rad = self.dir_deg * math.pi/180
-        self.step_size = .5
 
-        self.move_vec = (self.step_size * math.cos(self.dir_rad), self.step_size * math.sin(self.dir_rad))
+        self.move_vec = (settings.ray_step_size * math.cos(self.dir_rad), settings.ray_step_size * math.sin(self.dir_rad))
         self.rays_surface = pygame.Surface(screen_size)
 
         self.last_object_hit = None
@@ -47,6 +47,8 @@ class Ray():
         self.y += self.move_vec[1]
         self.calculate_ray()
 
+        stats.ray_pos_rounded = (round(self.x), round(self.y))
+
     def check_collisions(self) -> None:
         for obs in obstacle_manager.get_obstacles():
             if not obs.check_point_inside((self.x + self.move_vec[0], self.y + self.move_vec[1])): continue
@@ -64,5 +66,5 @@ class Ray():
         normalized_move = (self.move_vec[0] / move_vec_mag, self.move_vec[1] / move_vec_mag)
 
         dot = 2 * np.dot(normalized_move, normal)
-        self.move_vec = ((normalized_move[0] - dot * normal[0]) * self.step_size,
-                            (normalized_move[1] - dot * normal[1]) * self.step_size)
+        self.move_vec = ((normalized_move[0] - dot * normal[0]) * settings.ray_step_size,
+                            (normalized_move[1] - dot * normal[1]) * settings.ray_step_size)

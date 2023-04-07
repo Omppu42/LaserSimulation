@@ -25,12 +25,18 @@ class ObstacleManager():
         return self.__all_obstacles
     
 
+    def get_selected_obstacle(self) -> SquareObstacle | CircleObstacle:
+        return self.__all_obstacles[self.selected_index]
+    
+
     def draw_obstacles(self, screen) -> None:
         for obs in self.__all_obstacles:
             obs.draw(screen)
 
 
     def handle_events(self, event) -> None:
+        stats.total_obstacles = len(self.__all_obstacles)
+
         if self.selected_index == -1: return
 
         if event.type == pygame.KEYDOWN:
@@ -60,7 +66,7 @@ class ObstacleManager():
                     
     
     def mouse_motion(self) -> None:
-        if stats.updating_ray: return
+        if stats.simulation_running: return
         
         if pygame.mouse.get_pressed()[0]:
             if self.selected_index != -1:
@@ -76,7 +82,7 @@ class ObstacleManager():
 
 
     def check_click(self, mouse_pos: tuple) -> None:
-        if stats.updating_ray: return
+        if stats.simulation_running: return
 
         pygame.mouse.get_rel()
 
