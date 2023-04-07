@@ -2,29 +2,15 @@ import math
 import pygame
 pygame.init()
 
-class SquareObstacle():
+from obstacles.obstacle import ObstacleSuper
+
+class SquareObstacle(ObstacleSuper):
     def __init__(self, center_pos: tuple, side_length: float, rotation_deg: float):
-        self.x, self.y = center_pos
-        self.side_length = side_length
-        self.rotation_deg = rotation_deg
-
-        self.selected = False
+        super().__init__(center_pos, side_length, rotation_deg)
         
-        self.__setup_points()
-
-        # visualizing
-        self.temp_draw_point = (0,0)
-
-        self.closest_point = (0,0)
-        self.second_closest_point = (0,0)
-
-        self.find_normal_at_point((
-            (self.points_xy[0][0] + (self.points_xy[1][0] * 2)) / 3,
-            (self.points_xy[0][1] + (self.points_xy[1][1] * 2)) / 3))
-
 
     def __repr__(self) -> str:
-        return f"Square Obstacle at pos: ({self.x}, {self.y}) rotation: {self.rotation_deg} side_length: {self.side_length}"
+        return f"Square Obstacle at pos: ({self.x}, {self.y}) rotation: {self.rotation_deg} side_length: {self.radius}"
 
 
     def __vec(self, point1, point2) -> tuple:
@@ -35,13 +21,13 @@ class SquareObstacle():
         return (vec1[0] * vec2[0] + vec1[1] * vec2[1])
 
 
-    def __setup_points(self):
+    def update_drawing(self):
         self.rotation_rad = self.rotation_deg * math.pi/180
 
-        self.points_xy = [(self.x - self.side_length, self.y - self.side_length),
-                          (self.x - self.side_length, self.y + self.side_length),
-                          (self.x + self.side_length, self.y + self.side_length),
-                          (self.x + self.side_length, self.y - self.side_length)]
+        self.points_xy = [(self.x - self.radius, self.y - self.radius),
+                          (self.x - self.radius, self.y + self.radius),
+                          (self.x + self.radius, self.y + self.radius),
+                          (self.x + self.radius, self.y - self.radius)]
 
         rotation_matrix = [[math.cos(self.rotation_rad), -math.sin(self.rotation_rad)],
                            [math.sin(self.rotation_rad),  math.cos(self.rotation_rad)]]
@@ -52,44 +38,6 @@ class SquareObstacle():
                            rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
         
         self.points_xy = [(p[0] + self.x, p[1] + self.y) for p in rotated_points]
-
-
-    def scale_self(self, change) -> None:
-        # min and max sidelength
-        if self.side_length + change < 5 or self.side_length + change > 200: return
-
-        self.side_length += change
-        self.__setup_points()
-
-
-    def rotate_self(self, change) -> None:
-        self.rotation_deg += change
-        self.__setup_points()
-
-
-    def get_pos(self) -> int:
-        return (self.x, self.y)
-    
-
-    def get_size(self) -> int:
-        return self.side_length
-
-
-    def get_rotation(self) -> int:
-        return self.rotation_deg
-
-
-    def move_by(self, amount: tuple) -> None:
-        """Move the whole square in a direction"""
-        self.x += amount[0]
-        self.y += amount[1]
-
-        self.__setup_points()
-
-
-    def set_active(self, state: bool) -> None:
-        """Sets selected state"""
-        self.selected = state
 
 
     def find_normal_at_point(self, point: tuple) -> tuple:
@@ -109,8 +57,6 @@ class SquareObstacle():
         vec = (vec[1] + point[0], -vec[0] + point[1])
 
         # visualizing
-        self.temp_draw_point = point
-        self.normal = vec
 
         vec_mag = math.sqrt( math.pow(vec[0] - point[0], 2) + math.pow(vec[1] - point[1], 2))
         
@@ -165,13 +111,3 @@ class SquareObstacle():
             pygame.draw.lines(screen, (250,250,250), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
         else:
             pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
-
-        # DEBUGGING VISUALS
-        # normal
-        # pygame.draw.circle(screen, (200, 200, 200), self.temp_draw_point, 2)
-        # pygame.draw.line(screen, (255,255,255), self.temp_draw_point, self.normal)
-
-        # closest points
-        # pygame.draw.circle(screen, (200, 0, 0), self.closest_point, 3)
-        # pygame.draw.circle(screen, (200, 0, 0), self.second_closest_point, 3)
-

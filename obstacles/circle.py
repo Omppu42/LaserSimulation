@@ -2,66 +2,34 @@ import math
 import pygame
 pygame.init()
 
-class CircleObstacle():
-    def __init__(self, center_pos: tuple, radius: float):
-        self.x, self.y = center_pos
-        self.radius = radius
-        
-        self.width = 1
-        self.selected = False
+from obstacles.obstacle import ObstacleSuper
 
-        self.__redraw_surf()
+class CircleObstacle(ObstacleSuper):
+    def __init__(self, center_pos: tuple, radius: float):
+        super().__init__(center_pos, radius, 0)
         
     
     def __repr__(self) -> str:
         return f"Circle Obstacle at pos: ({self.x}, {self.y}) radius: {self.radius}"
 
 
-    def __redraw_surf(self) -> None:
+    def update_drawing(self) -> None:
+        # Setup the surface
         self.surf = pygame.Surface((2 * self.radius, 2 * self.radius), pygame.SRCALPHA, 32)
         self.surf = self.surf.convert_alpha()
         self.surf.fill((0, 0, 0, 0))
         
+        CIRCLE_WIDTH = 1
         col = (250, 250, 250, 255) if self.selected else (180, 180, 180, 255)
+
+        # draw 2 circles: 1 for outside, second to fill in the center
         pygame.draw.circle(self.surf, col, (self.radius, self.radius), self.radius)
-        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), self.radius - self.width)
+        pygame.draw.circle(self.surf, (0, 0, 0, 0), (self.radius, self.radius), self.radius - CIRCLE_WIDTH)
+
         self.rect = self.surf.get_rect(center=(self.x, self.y))
 
 
-    def move_by(self, amount: tuple) -> None:
-        """Move the whole square in a direction"""
-        self.x += amount[0]
-        self.y += amount[1]
-
-        self.__redraw_surf()
-
-
-    def set_active(self, state: bool) -> None:
-        """Sets selected state"""
-        self.selected = state
-        self.__redraw_surf()
-
-
-    def get_pos(self) -> int:
-        return (self.x, self.y)
-    
-
-    def get_size(self) -> int:
-        return self.radius
-
-
-    def get_rotation(self) -> int:
-        return 0
-
-
-    def scale_self(self, change) -> None:
-        # min and max scale
-        if self.radius + change < 5 or self.radius + change > 200: return
-        self.radius += change
-        self.__redraw_surf()
-
-
-    def rotate_self(self, change) -> None:
+    def rotate_self(self, change_deg) -> None:
         pass
 
 

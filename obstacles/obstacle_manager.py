@@ -12,9 +12,9 @@ class ObstacleManager():
                                     SquareObstacle((600, 300), 50, 85), SquareObstacle((500, 480), 40, 20),
                                     SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70)]
 
-        self.__obstacles_circle = [CircleObstacle(( 440, 250), 50), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
+        self.__obstacles_circle = [CircleObstacle(( 440, 250), 200), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
         
-        self.__obstacles_square.sort(key=lambda x: x.side_length)
+        self.__obstacles_square.sort(key=lambda x: x.radius)
         self.__obstacles_circle.sort(key=lambda x: x.radius)
 
         self.__all_obstacles = self.__obstacles_circle + self.__obstacles_square
@@ -78,7 +78,7 @@ class ObstacleManager():
 
     def check_mouse_up(self) -> None:
         self.selected_index = -1
-        self.update_obstacle_status()
+        self.update_obstacles_status()
 
 
     def check_click(self, mouse_pos: tuple) -> None:
@@ -98,10 +98,10 @@ class ObstacleManager():
             # didn't click any
             self.selected_index = -1
 
-        self.update_obstacle_status()
+        self.update_obstacles_status()
 
 
-    def update_obstacle_status(self):
+    def update_obstacles_status(self):
         # update selected status
         for index, obstacle in enumerate(self.__all_obstacles):
             if index == self.selected_index:
