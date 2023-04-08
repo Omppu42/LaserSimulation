@@ -19,6 +19,8 @@ def main():
 
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
     #TODO: Add 'current step' to debug menu when running
+    #TODO: Reset the simulation
+    #TODO: Save and load presets
 
     clock = pygame.time.Clock()
 

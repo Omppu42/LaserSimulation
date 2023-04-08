@@ -1,10 +1,10 @@
 import pygame
 pygame.init()
 
-from gui.text.text_object import Text_Object
+from gui.text.text_object import TextObject
 
-class Text_Group():
-    def __init__(self, text_objects: list[Text_Object]):
+class TextGroup():
+    def __init__(self, text_objects: list[TextObject]):
         self.text_objects = text_objects
 
     def render_text(self, screen) -> None:

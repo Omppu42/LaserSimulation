@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-class Text_Object():
+class TextObject():
     def __init__(self, text: str, center_pos_xy: tuple, font: pygame.font.Font):
         """Creates a text render and a rect for it \n 
         Any placeholder values need to be updated with set_placeholder() function"""

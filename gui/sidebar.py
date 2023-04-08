@@ -2,10 +2,10 @@ import pygame
 
 from gui.button import Button
 from gui.input_field import NumberInputField
-from gui.image_button import Image_Button
+from gui.image_button import ImageButton
 
-from gui.text.text_object import Text_Object
-from gui.text.text_group import Text_Group
+from gui.text.text_object import TextObject
+from gui.text.text_group import TextGroup
 
 from gui.text.text_with_input import TextWithInputObject
 from gui.text.text_with_input_group import TextWithInputGroup
@@ -31,8 +31,8 @@ class Sidebar():
         button_font = pygame.font.Font(settings.global_font_path, 26)
         self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start Simulation", font=button_font, border=2)
 
-        self.spawn_square_button = Image_Button((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
-        self.spawn_circle_button = Image_Button((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
+        self.spawn_square_button = ImageButton((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
+        self.spawn_circle_button = ImageButton((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
 
         self.__init_inputfields()
         self.__init_texts()
@@ -56,14 +56,14 @@ class Sidebar():
         self.SCALE_INDEX = 1
         self.ROTATION_INDEX = 2
 
-        self.obstacle_selected_texts = Text_Group( [Text_Object("Pos %s", self.__get_pos_in_center(self.h - 200), font),
-                                                    Text_Object("Scale %d", self.__get_pos_in_center(self.h - 180), font),
-                                                    Text_Object("Rotation deg %d", self.__get_pos_in_center(self.h - 160), font),
-                                                    Text_Object("Arrows to Rotate and Scale", self.__get_pos_in_center(self.h - 120), font),
-                                                    Text_Object("'x' to Delete", self.__get_pos_in_center(self.h - 100), font)] )
+        self.obstacle_selected_texts = TextGroup( [TextObject("Pos %s", self.__get_pos_in_center(self.h - 200), font),
+                                                   TextObject("Scale %d", self.__get_pos_in_center(self.h - 180), font),
+                                                   TextObject("Rotation deg %d", self.__get_pos_in_center(self.h - 160), font),
+                                                   TextObject("Arrows to Rotate and Scale", self.__get_pos_in_center(self.h - 120), font),
+                                                   TextObject("'x' to Delete", self.__get_pos_in_center(self.h - 100), font)] )
 
         # display these when NO obstacle is selected
-        self.no_obstacle_selected_texts = Text_Group( [Text_Object("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
+        self.no_obstacle_selected_texts = TextGroup( [TextObject("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
 
         # display when simulation running
         self.FPS_INDEX = 0
@@ -72,11 +72,11 @@ class Sidebar():
         self.TOTAL_OBSTS_INDEX = 3
         self.MOVES_PER_FRAME = 4
 
-        self.running_texts = Text_Group( [Text_Object("FPS %d", self.__get_pos_in_center(30), font),
-                                          Text_Object("Laser Pos %s", self.__get_pos_in_center(70), font),
-                                          Text_Object("Total Collisions %d", self.__get_pos_in_center(90), font),
-                                          Text_Object("Obstacles %d", self.__get_pos_in_center(130), font),
-                                          Text_Object("Moves / Frame %d", self.__get_pos_in_center(150), font)] )
+        self.running_texts = TextGroup( [TextObject("FPS %d", self.__get_pos_in_center(30), font),
+                                          TextObject("Laser Pos %s", self.__get_pos_in_center(70), font),
+                                          TextObject("Total Collisions %d", self.__get_pos_in_center(90), font),
+                                          TextObject("Obstacles %d", self.__get_pos_in_center(130), font),
+                                          TextObject("Moves / Frame %d", self.__get_pos_in_center(150), font)] )
 
 
     def __get_pos_in_center(self, y_pos: int) -> tuple:
