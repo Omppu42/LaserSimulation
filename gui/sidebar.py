@@ -10,6 +10,8 @@ from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
 from config.settings import settings
 
+from ray import Ray
+
 pygame.init()
 
 
@@ -107,18 +109,9 @@ class Sidebar():
         self.play_button.check_hover(pygame.mouse.get_pos())
         self.spawn_square_button.check_hover(pygame.mouse.get_pos())
         self.spawn_circle_button.check_hover(pygame.mouse.get_pos())
-
-    def check_click_play_button(self) -> bool:
-        if stats.simulation_running == True: return False
-
-        if self.play_button.check_click():
-            self.on_simulation_start()
-            return True
-        
-        return False
     
 
-    def check_click_other(self) -> None:
+    def check_click(self, ray: Ray) -> None:
         if stats.simulation_running == True: return
 
         if self.spawn_square_button.check_click():
@@ -126,6 +119,10 @@ class Sidebar():
 
         if self.spawn_circle_button.check_click():
             obstacle_manager.spawn_circle()
+
+        if self.play_button.check_click():
+            self.on_simulation_start()
+            ray.clear_surface()
 
     def on_simulation_start(self) -> None:
         stats.simulation_running = True

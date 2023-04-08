@@ -39,6 +39,17 @@ class Ray():
         self.rays_surface.fill((0,0,0))
 
 
+    def update(self) -> None:
+        if stats.simulation_running and stats.current_ray_step < settings.total_steps:
+            for _ in range(settings.ray_updates_per_frame):
+
+                # Check collisions
+                self.check_collisions()
+                self.move()
+
+                stats.current_ray_step += 1
+
+
     def draw_ray(self, screen: pygame.Surface) -> None:
         screen.blit(self.rays_surface, (0,0))
 

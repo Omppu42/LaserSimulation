@@ -39,10 +39,9 @@ class ObstacleManager():
 
         if self.selected_index == -1: return
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_x:
-                self.__all_obstacles.pop(self.selected_index)
-                self.selected_index = -1
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+            self.__all_obstacles.pop(self.selected_index)
+            self.selected_index = -1
 
 
     def check_keys_held(self) -> None:
@@ -65,10 +64,10 @@ class ObstacleManager():
             
     
     def spawn_square(self) -> None:
-        self.__all_obstacles.append(SquareObstacle((400, 399), 50, 0))
+        self.__all_obstacles.append(SquareObstacle((400, 400), 50, 0))
 
     def spawn_circle(self) -> None:
-        self.__all_obstacles.append(CircleObstacle((400, 399), 50))
+        self.__all_obstacles.append(CircleObstacle((400, 400), 50))
 
     
     def mouse_motion(self) -> None:

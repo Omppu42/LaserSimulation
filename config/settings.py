@@ -10,9 +10,9 @@ class Settings():
 
         self.start_fps_limit = 60
 
-        self.max_fps = 60
+        self.max_fps = 600
         self.total_steps = 500000
-        self.ray_updates_per_frame = 5
+        self.ray_updates_per_frame = 50
         self.ray_step_size = .5
 
 

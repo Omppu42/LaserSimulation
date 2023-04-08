@@ -17,10 +17,6 @@ class SquareObstacle(ObstacleSuper):
         return ((point2[0] - point1[0]), (point2[1] - point1[1]))
 
 
-    def __dot(self, vec1, vec2) -> float:
-        return (vec1[0] * vec2[0] + vec1[1] * vec2[1])
-
-
     def update_drawing(self):
         self.rotation_rad = self.rotation_deg * math.pi/180
 
@@ -44,9 +40,13 @@ class SquareObstacle(ObstacleSuper):
         """Returns a vector containing the surface's normal from the point of impact"""
         distances = self.get_vertex_distances(point)
         s = set(distances)
-        
+        s = sorted(s)
+
         # used to convert any of the list/tuple to the distinct element and sorted sequence of elements
-        min_dist, second_min_dist = sorted(s)[0], sorted(s)[1]
+        if len(s) == 1:
+            return (0,0)
+        else:
+            min_dist, second_min_dist = s[0], s[1]
 
         self.closest_point = self.points_xy[distances.index(min_dist)]
         self.second_closest_point = self.points_xy[distances.index(second_min_dist)]
@@ -97,10 +97,10 @@ class SquareObstacle(ObstacleSuper):
         BC = self.__vec(self.points_xy[1], self.points_xy[2])
         BM = self.__vec(self.points_xy[1], point)
 
-        dotABAM = self.__dot(AB, AM)
-        dotABAB = self.__dot(AB, AB)
-        dotBCBM = self.__dot(BC, BM)
-        dotBCBC = self.__dot(BC, BC)
+        dotABAM = (AB[0] * AM[0] + AB[1] * AM[1])
+        dotABAB = (AB[0] * AB[0] + AB[1] * AB[1])
+        dotBCBM = (BC[0] * BM[0] + BC[1] * BM[1])
+        dotBCBC = (BC[0] * BC[0] + BC[1] * BC[1])
 
         return (0 <= dotABAM and dotABAM <= dotABAB and
                  0 <= dotBCBM and dotBCBM <= dotBCBC)

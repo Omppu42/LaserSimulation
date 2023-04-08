@@ -15,6 +15,7 @@ def main():
     from ray import Ray
     from gui.sidebar import Sidebar
     from obstacles.obstacle_manager import obstacle_manager
+    from event_handler import handle_events
 
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
 
@@ -26,52 +27,19 @@ def main():
     ray = Ray((400, 400), (settings.screen_width - settings.sidebar_width, settings.screen_height), 260)
     ray.calculate_ray()
 
-    running = True
-    while running:
+    while True:
         screen.fill(settings.bg_color)
 
         # Move ray
-        if stats.simulation_running and stats.current_ray_step < settings.total_steps:
-            for _ in range(settings.ray_updates_per_frame):
-
-                # Check collisions
-                ray.check_collisions()
-                ray.move()
-
-                stats.current_ray_step += 1
+        ray.update()
 
         # Draw
         ray.draw_ray(screen)
         obstacle_manager.draw_obstacles(screen)
         sidebar.draw(screen)
 
-        stats.fps = round(clock.get_fps())
-
         # Pygame Events
-        obstacle_manager.check_keys_held()
-
-        for event in pygame.event.get():
-            obstacle_manager.handle_events(event)
-            
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                obstacle_manager.check_mouse_up()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:    
-                    obstacle_manager.check_click(pygame.mouse.get_pos())
-                    sidebar.check_click_other()
-
-                    if sidebar.check_click_play_button():
-                        ray.clear_surface()
-
-
-            if event.type == pygame.MOUSEMOTION:
-                sidebar.check_mouse_motion()
-                obstacle_manager.mouse_motion()
-
+        handle_events(sidebar, ray, clock)
 
         pygame.display.update()
 

@@ -56,6 +56,9 @@ class CircleObstacle(ObstacleSuper):
         # offset point onto the edge of the circle
         mag = math.sqrt( math.pow(point[0] - self.x, 2) + math.pow(point[1] - self.y, 2) )
 
+        if mag == 0:
+            return (0,0)
+
         Cx = self.x + self.radius * ( (point[0] - self.x) / mag )
         Cy = self.y + self.radius * ( (point[1] - self.y) / mag )
 
