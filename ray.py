@@ -9,23 +9,39 @@ from config.settings import settings
 pygame.init()
 
 class Ray():
+    CLICK_RANGE = 10
+    ROTATION_OFFSET = -90
+    ROTATION_SPEED = 2
+
     def __init__(self, start_pos: tuple, screen_size: tuple, dir_deg: float):
         self.x, self.y = start_pos
         self.w, self.h = screen_size
         self.dir_deg = dir_deg
-        self.dir_rad = self.dir_deg * math.pi/180
-
-        self.move_vec = (settings.ray_step_size * math.cos(self.dir_rad), settings.ray_step_size * math.sin(self.dir_rad))
-        self.rays_surface = pygame.Surface(screen_size)
-
+        
         self.last_object_hit = None
 
-        pygame.draw.circle(self.rays_surface, (200, 0, 0), (self.x, self.y), 2)
+        self.update_start_surface()
 
-        ROTATION_OFFSET = -90
+
+    def update_start_surface(self) -> None:
+        stats.ray_pos_rounded = (round(self.x), round(self.y))
+        stats.ray_rotation = self.dir_deg
+        
+        self.dir_rad = self.dir_deg * math.pi/180
+        self.move_vec = (settings.ray_step_size * math.cos(self.dir_rad), settings.ray_step_size * math.sin(self.dir_rad))
+
+        self.rays_surface = pygame.Surface((self.w, self.h))
+
+        color = (200, 0, 0) if stats.ray_selected else (150, 0, 0)
+        pygame.draw.circle(self.rays_surface, color, (self.x, self.y), 2)
 
         dir_arrow = pygame.transform.smoothscale(pygame.image.load("assets/arrow.png"), (64, 64))
-        dir_arrow = pygame.transform.rotate(dir_arrow, -self.dir_deg + ROTATION_OFFSET)
+        dir_arrow = pygame.transform.rotate(dir_arrow, -self.dir_deg + Ray.ROTATION_OFFSET)
+
+        if stats.ray_selected:
+            dir_arrow.set_alpha(200)
+        else:
+            dir_arrow.set_alpha(150)
 
         dir_arrow_rect = dir_arrow.get_rect(center=(self.x, self.y))
         self.rays_surface.blit(dir_arrow, dir_arrow_rect)
@@ -37,6 +53,42 @@ class Ray():
 
     def clear_surface(self) -> None:
         self.rays_surface.fill((0,0,0))
+
+
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if stats.simulation_running: return
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            stats.ray_selected = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            mouse_pos = pygame.mouse.get_pos()
+            pygame.mouse.get_rel()
+            dist = math.sqrt( math.pow(mouse_pos[0] - self.x, 2) + math.pow(mouse_pos[1] - self.y, 2) )
+            
+            if dist < Ray.CLICK_RANGE:
+                stats.ray_selected = True
+
+        if event.type == pygame.MOUSEMOTION and stats.ray_selected:
+            diff = pygame.mouse.get_rel()
+            self.x += diff[0]
+            self.y += diff[1]
+
+        self.update_start_surface()
+
+
+    def check_keys(self) -> None:
+        if stats.ray_selected == False: return
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            self.dir_deg -= Ray.ROTATION_SPEED
+            self.update_start_surface()
+
+        if keys[pygame.K_RIGHT]:  
+            self.dir_deg += Ray.ROTATION_SPEED
+            self.update_start_surface()
 
 
     def update(self) -> None:
@@ -59,6 +111,7 @@ class Ray():
         self.calculate_ray()
 
         stats.ray_pos_rounded = (round(self.x), round(self.y))
+        stats.ray_rotation = self.dir_deg
 
     def check_collisions(self) -> None:
         for obs in obstacle_manager.get_obstacles():

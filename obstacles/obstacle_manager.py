@@ -85,7 +85,7 @@ class ObstacleManager():
 
 
     def check_click(self, mouse_pos: tuple) -> None:
-        if stats.simulation_running: return
+        if stats.simulation_running or stats.ray_selected: return
 
         pygame.mouse.get_rel()
 

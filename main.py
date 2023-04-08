@@ -18,6 +18,7 @@ def main():
     from event_handler import handle_events
 
     #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
+    #TODO: Can't start simulation if the ray is inside an obstacle
     #TODO: Add 'current step' to debug menu when running
     #TODO: Reset the simulation
     #TODO: Save and load presets

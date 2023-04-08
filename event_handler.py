@@ -10,9 +10,11 @@ from ray import Ray
 def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
     stats.fps = round(clock.get_fps())
     obstacle_manager.check_keys_held()
-
+    ray.check_keys()
+    
     for event in pygame.event.get():
-        
+        ray.handle_event(event)
+
         if event.type == pygame.QUIT:
             sys.exit()
 
