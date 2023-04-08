@@ -1,9 +1,14 @@
 import pygame
 
 from gui.button import Button
+from gui.input_field import NumberInputField
 from gui.image_button import Image_Button
+
 from gui.text.text_object import Text_Object
 from gui.text.text_group import Text_Group
+
+from gui.text.text_with_input import TextWithInputObject
+from gui.text.text_with_input_group import TextWithInputGroup
 
 from obstacles.obstacle_manager import obstacle_manager
 
@@ -29,10 +34,21 @@ class Sidebar():
         self.spawn_square_button = Image_Button((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
         self.spawn_circle_button = Image_Button((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
 
-        self.init_texts()
+        self.__init_inputfields()
+        self.__init_texts()
 
 
-    def init_texts(self) -> None:
+    def __init_inputfields(self) -> None:
+        textfield_font = pygame.font.Font(settings.global_font_path, 20)
+
+        self.CONFIG_FPS_INDEX = 0
+        self.CONFIG_UPDATES_FRAME_INDEX = 1
+
+        self.inputfields = TextWithInputGroup( [TextWithInputObject("Max FPS",          self.x + 20, 400, "60", 3, textfield_font, empty_field_value=1, int_only=True),
+                                                TextWithInputObject("Updates / Frame",  self.x + 20, 440, "5", 2, textfield_font, empty_field_value=1, int_only=True)] )
+
+
+    def __init_texts(self) -> None:
         font = pygame.font.Font(settings.global_font_path, 20)
 
         # display these when an obstacle is selected
@@ -68,14 +84,23 @@ class Sidebar():
         return (self.x + self.w / 2, y_pos)
 
 
+    def __update_texts(self) -> None:
+        self.running_texts.text_objects[self.LASER_POS_INDEX]       .set_placeholder( str(stats.ray_pos_rounded) )
+        self.running_texts.text_objects[self.FPS_INDEX]             .set_placeholder( stats.fps )
+        self.running_texts.text_objects[self.TOTAL_COLLS_INDEX]     .set_placeholder( stats.num_collisions )
+
+
     def draw(self, screen) -> None:
         screen.blit(self.surf, (self.x, self.y))
 
         if not stats.simulation_running:
             self.render_texts(screen)
+
             self.play_button.draw(screen)
             self.spawn_square_button.draw(screen)
             self.spawn_circle_button.draw(screen)
+            self.inputfields.draw(screen)
+
         else:
             self.__update_texts()
             self.running_texts.render_text(screen)
@@ -97,12 +122,6 @@ class Sidebar():
             self.obstacle_selected_texts.render_text(screen)
 
 
-    def __update_texts(self) -> None:
-        self.running_texts.text_objects[self.LASER_POS_INDEX]       .set_placeholder( str(stats.ray_pos_rounded) )
-        self.running_texts.text_objects[self.FPS_INDEX]             .set_placeholder( stats.fps )
-        self.running_texts.text_objects[self.TOTAL_COLLS_INDEX]     .set_placeholder( stats.num_collisions )
-        
-
     def check_mouse_motion(self):
         if stats.simulation_running == True: return
 
@@ -114,6 +133,8 @@ class Sidebar():
     def check_click(self, ray: Ray) -> None:
         if stats.simulation_running == True: return
 
+        self.inputfields.check_click()
+
         if self.spawn_square_button.check_click():
             obstacle_manager.spawn_square()
 
@@ -124,8 +145,19 @@ class Sidebar():
             self.on_simulation_start()
             ray.clear_surface()
 
+
+    def handle_key_pressed(self, event) -> None:
+        self.inputfields.on_keydown(event)
+
+
     def on_simulation_start(self) -> None:
         stats.simulation_running = True
 
+        self.inputfields.fix_strings()
+
+        settings.max_fps =                  self.inputfields.get_inputfield_at_index(self.CONFIG_FPS_INDEX).return_val()
+        settings.ray_updates_per_frame =    self.inputfields.get_inputfield_at_index(self.CONFIG_UPDATES_FRAME_INDEX).return_val()
+
+        stats.total_obstacles = len(obstacle_manager.get_obstacles())
         self.running_texts.text_objects[self.TOTAL_OBSTS_INDEX]     .set_placeholder( stats.total_obstacles )
         self.running_texts.text_objects[self.MOVES_PER_FRAME]       .set_placeholder( settings.ray_updates_per_frame )

@@ -12,10 +12,13 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
     obstacle_manager.check_keys_held()
 
     for event in pygame.event.get():
-        obstacle_manager.handle_events(event)
         
         if event.type == pygame.QUIT:
             sys.exit()
+
+        if event.type == pygame.KEYDOWN:
+            sidebar.handle_key_pressed(event)
+            obstacle_manager.handle_events(event)
 
         if event.type == pygame.MOUSEBUTTONUP:
             obstacle_manager.check_mouse_up()

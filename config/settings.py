@@ -9,11 +9,11 @@ class Settings():
         self.profile = False
 
         self.start_fps_limit = 60
-
-        self.max_fps = 600
-        self.total_steps = 500000
-        self.ray_updates_per_frame = 50
         self.ray_step_size = .5
+
+        # set by user
+        self.max_fps = 0
+        self.ray_updates_per_frame = 0
 
 
 settings = Settings()

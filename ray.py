@@ -40,7 +40,7 @@ class Ray():
 
 
     def update(self) -> None:
-        if stats.simulation_running and stats.current_ray_step < settings.total_steps:
+        if stats.simulation_running:
             for _ in range(settings.ray_updates_per_frame):
 
                 # Check collisions

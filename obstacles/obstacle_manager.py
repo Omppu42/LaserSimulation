@@ -35,11 +35,9 @@ class ObstacleManager():
 
 
     def handle_events(self, event) -> None:
-        stats.total_obstacles = len(self.__all_obstacles)
-
         if self.selected_index == -1: return
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+        if event.key == pygame.K_x:
             self.__all_obstacles.pop(self.selected_index)
             self.selected_index = -1
 
