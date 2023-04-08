@@ -4,7 +4,7 @@ pygame.init()
 from gui.text.text_with_input import TextWithInputObject
 from gui.input_field import NumberInputField
 
-class TextWithInputGroup():
+class TextWithInputManager():
     def __init__(self, objects: list[TextWithInputObject]):
         self.objects = objects
 

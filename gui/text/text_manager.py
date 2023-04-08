@@ -3,7 +3,7 @@ pygame.init()
 
 from gui.text.text_object import TextObject
 
-class TextGroup():
+class TextManager():
     def __init__(self, text_objects: list[TextObject]):
         self.text_objects = text_objects
 
