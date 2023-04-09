@@ -90,8 +90,8 @@ class Sidebar():
         self.CONFIG_FPS_INDEX = 0
         self.CONFIG_UPDATES_FRAME_INDEX = 1
 
-        self.inputfields = TextWithInputManager( [TextWithInputObject("Max FPS",          self.x + 20, 400, "60", 3, textfield_font, empty_field_value=1, int_only=True),
-                                                  TextWithInputObject("Updates / Frame",  self.x + 20, 440, "5", 2, textfield_font, empty_field_value=1, int_only=True)] )
+        self.inputfields = TextWithInputManager( [TextWithInputObject("Max FPS",          self.x + 20, 400, "600", 3, textfield_font, empty_field_value=1, int_only=True),
+                                                  TextWithInputObject("Updates / Frame",  self.x + 20, 440, "50", 2, textfield_font, empty_field_value=1, int_only=True)] )
 
 
     def __init_texts(self) -> None:
@@ -121,6 +121,8 @@ class Sidebar():
                                          TextObject("Arrows to Rotate", self.__get_pos_in_center(self.h - 120), font),
                                          TextObject("Mouse to Move", self.__get_pos_in_center(self.h - 100), font)])
 
+        self.cant_start = TextManager([TextObject("Can't start when the ray", self.__get_pos_in_center(self.h - 60), font),
+                                       TextObject("is inside and obstacle", self.__get_pos_in_center(self.h - 40), font)])
 
     def __get_pos_in_center(self, y_pos: int) -> tuple:
         """Returns a tuple position that is in the center of the sidebar with a variable y_pos"""
@@ -150,7 +152,9 @@ class Sidebar():
 
 
     def draw_not_running(self, screen) -> None:
-        self.play_button.draw(screen)
+        if stats.can_start: self.play_button.draw(screen)
+        else:               self.cant_start.render_text(screen)
+
         self.spawn_circle_button.draw(screen)
         self.spawn_square_button.draw(screen)
         self.inputfields.draw(screen)
@@ -172,7 +176,7 @@ class Sidebar():
     def check_mouse_motion(self):
         if stats.simulation_running == True: return
 
-        self.play_button.check_hover(pygame.mouse.get_pos())
+        if stats.can_start: self.play_button.check_hover(pygame.mouse.get_pos())
         self.spawn_square_button.check_hover(pygame.mouse.get_pos())
         self.spawn_circle_button.check_hover(pygame.mouse.get_pos())
     
@@ -188,7 +192,7 @@ class Sidebar():
         if self.spawn_circle_button.check_click():
             obstacle_manager.spawn_circle()
 
-        if self.play_button.check_click():
+        if stats.can_start and self.play_button.check_click():
             self.on_simulation_start()
             ray.clear_surface()
 
@@ -200,7 +204,7 @@ class Sidebar():
     def on_simulation_start(self) -> None:
         stats.simulation_running = True
         stats.total_obstacles = len(obstacle_manager.get_obstacles())
-        
+
         settings.max_fps =                  self.inputfields.get_inputfield_at_index(self.CONFIG_FPS_INDEX).return_val()
         settings.ray_updates_per_frame =    self.inputfields.get_inputfield_at_index(self.CONFIG_UPDATES_FRAME_INDEX).return_val()
 

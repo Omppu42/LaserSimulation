@@ -10,9 +10,10 @@ class ObstacleManager():
     def __init__(self) -> None:
         self.__obstacles_square = [ SquareObstacle((300, 300), 100, 30), SquareObstacle((600, 150), 100, 60), 
                                     SquareObstacle((600, 300), 50, 85), SquareObstacle((500, 480), 40, 20),
-                                    SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70)]
+                                    SquareObstacle((250, 525), 100, 82), SquareObstacle((475, 675), 100, 70), SquareObstacle((600, 480), 100, 70),
+                                    SquareObstacle((500, 400), 100, 100)]
 
-        self.__obstacles_circle = [CircleObstacle(( 440, 250), 50), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
+        self.__obstacles_circle = [CircleObstacle(( 440, 250), 46), CircleObstacle(( 450, 180), 50), CircleObstacle(( 400, 500), 20), CircleObstacle(( 600, 360), 20)]
         
         self.__obstacles_square.sort(key=lambda x: x.radius)
         self.__obstacles_circle.sort(key=lambda x: x.radius)
@@ -21,7 +22,7 @@ class ObstacleManager():
         self.selected_index = -1
 
 
-    def get_obstacles(self) -> list:
+    def get_obstacles(self) -> list[SquareObstacle | CircleObstacle]:
         return self.__all_obstacles
     
 
@@ -75,7 +76,7 @@ class ObstacleManager():
             if self.selected_index != -1:
                 mouse_moved = pygame.mouse.get_rel()
 
-                _selected_obs = obstacle_manager.get_obstacles()[self.selected_index]
+                _selected_obs = self.get_obstacles()[self.selected_index]
                 _selected_obs.move_by(mouse_moved)
 
 
@@ -89,13 +90,12 @@ class ObstacleManager():
 
         pygame.mouse.get_rel()
 
-        for index, ostacle in enumerate(obstacle_manager.get_obstacles()):
+        for _index, _ostacle in enumerate(self.get_obstacles()):
             # already selected
-            if index == self.selected_index: continue
+            if _index == self.selected_index: continue
 
-            # check if clicked
-            if ostacle.check_point_inside(mouse_pos):
-                self.selected_index = obstacle_manager.get_obstacles().index(ostacle)
+            if _ostacle.check_point_inside(mouse_pos):
+                self.selected_index = _index
                 break
         else:
             # didn't click any
@@ -104,8 +104,16 @@ class ObstacleManager():
         self.update_obstacles_status()
 
 
+    def check_point_inside_obstacle(self, point: tuple) -> bool:
+        for _obs in self.get_obstacles():
+            if _obs.check_point_inside(point):
+                return True
+            
+        return False
+
+
     def update_obstacles_status(self):
-        # update selected status
+        """Update the active status of each obstacle"""
         for index, obstacle in enumerate(self.__all_obstacles):
             if index == self.selected_index:
                 obstacle.set_active(True)

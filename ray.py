@@ -92,6 +92,8 @@ class Ray():
 
 
     def update(self) -> None:
+        stats.can_start = not obstacle_manager.check_point_inside_obstacle((self.x, self.y))
+
         if stats.simulation_running:
             for _ in range(settings.ray_updates_per_frame):
 

@@ -17,9 +17,6 @@ def main():
     from obstacles.obstacle_manager import obstacle_manager
     from event_handler import handle_events
 
-    #TODO: Before starting add number text field to type max fps, updates at a time, max steps before stopping
-    #TODO: Can't start simulation if the ray is inside an obstacle
-    #TODO: Add 'current step' to debug menu when running
     #TODO: Reset the simulation
     #TODO: Save and load presets
 
@@ -28,7 +25,7 @@ def main():
     sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
                       (settings.sidebar_width, settings.screen_height))
     
-    ray = Ray((400, 400), (settings.screen_width - settings.sidebar_width, settings.screen_height), 260)
+    ray = Ray((500, 250), (settings.screen_width - settings.sidebar_width, settings.screen_height), 260)
     ray.calculate_ray()
 
     while True:
