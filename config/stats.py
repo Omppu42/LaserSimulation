@@ -9,5 +9,6 @@ class Stats():
         self.ray_rotation = 0
         self.total_obstacles = 0
         self.ray_selected = False
+        self.sidebar_texts_data = {}
 
 stats = Stats()

@@ -1,7 +1,6 @@
 import pygame
 
 from gui.button import Button
-from gui.input_field import NumberInputField
 from gui.image_button import ImageButton
 
 from gui.text.text_object import TextObject
@@ -42,8 +41,47 @@ class Sidebar():
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
 
+        self.__init_keys()
+        self.__update_texts_data()
+
         self.__init_inputfields()
         self.__init_texts()
+
+
+    def __init_keys(self) -> None:
+        self.RAY_POS_KEY = "ray_pos"
+        self.RAY_ROT_KEY = "ray_rot"
+        self.RAY_SPEED_KEY = "ray_speed"
+
+        self.FPS_KEY = "fps"
+        self.NUM_COLLS_KEY = "num_colls"
+        self.CUR_STEP_KEY = "current_step"
+
+        self.CUR_OBST_POS_KEY = "current_pos"
+        self.CUR_OBST_ROT_KEY = "current_rot"
+        self.CUR_OBST_SCALE_KEY = "current_scale"
+
+        self.UPDATES_PER_FRAME_KEY = "updates_per_frame"
+        self.TOTAL_OBSTACLES_KEY = "total_obsts"
+
+
+    def __update_texts_data(self) -> None:
+        _curr_obst = obstacle_manager.get_selected_obstacle()
+
+        stats.sidebar_texts_data[self.RAY_POS_KEY] = str(stats.ray_pos_rounded)
+        stats.sidebar_texts_data[self.RAY_ROT_KEY] = stats.ray_rotation
+        stats.sidebar_texts_data[self.RAY_SPEED_KEY] = '{0:.1f}'.format(settings.ray_step_size)
+
+        stats.sidebar_texts_data[self.FPS_KEY] = stats.fps
+        stats.sidebar_texts_data[self.NUM_COLLS_KEY] = stats.num_collisions
+        stats.sidebar_texts_data[self.CUR_STEP_KEY] = stats.current_ray_step
+
+        stats.sidebar_texts_data[self.CUR_OBST_POS_KEY] = str(_curr_obst.get_pos())
+        stats.sidebar_texts_data[self.CUR_OBST_ROT_KEY] = _curr_obst.get_rotation()
+        stats.sidebar_texts_data[self.CUR_OBST_SCALE_KEY] = _curr_obst.get_size()
+
+        stats.sidebar_texts_data[self.UPDATES_PER_FRAME_KEY] = settings.ray_updates_per_frame
+        stats.sidebar_texts_data[self.TOTAL_OBSTACLES_KEY] = stats.total_obstacles
 
 
     def __init_inputfields(self) -> None:
@@ -60,13 +98,9 @@ class Sidebar():
         font = pygame.font.Font(settings.global_font_path, 20)
 
         # display these when an obstacle is selected
-        self.POS_INDEX = 0
-        self.SCALE_INDEX = 1
-        self.ROTATION_INDEX = 2
-
-        self.obstacle_selected_texts = TextManager( [TextObject("Pos %s", self.__get_pos_in_center(self.h - 200), font),
-                                                     TextObject("Scale %d", self.__get_pos_in_center(self.h - 180), font),
-                                                     TextObject("Rotation deg %d", self.__get_pos_in_center(self.h - 160), font),
+        self.obstacle_selected_texts = TextManager( [TextObject("Pos %s", self.__get_pos_in_center(self.h - 200), font, placeholder_key=self.CUR_OBST_POS_KEY),
+                                                     TextObject("Scale %d", self.__get_pos_in_center(self.h - 180), font, placeholder_key=self.CUR_OBST_SCALE_KEY),
+                                                     TextObject("Rotation deg %d", self.__get_pos_in_center(self.h - 160), font, placeholder_key=self.CUR_OBST_ROT_KEY),
                                                      TextObject("Arrows to Rotate and Scale", self.__get_pos_in_center(self.h - 120), font),
                                                      TextObject("'x' to Delete", self.__get_pos_in_center(self.h - 100), font)] )
 
@@ -74,56 +108,28 @@ class Sidebar():
         self.no_obstacle_selected_texts = TextManager( [TextObject("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
 
         # display when simulation running
-        self.FPS_INDEX = 0
-        self.LASER_POS_INDEX = 1
-        self.TOTAL_COLLS_INDEX = 2
-        self.TOTAL_UPDATES_INDEX = 3
-        self.TOTAL_OBSTS_INDEX = 4
-        self.MOVES_PER_FRAME = 5
-        self.PXL_PER_UPDATE = 6
+        self.running_texts = TextManager( [TextObject("FPS %d", self.__get_pos_in_center(30), font, placeholder_key=self.FPS_KEY),
+                                           TextObject("Laser Pos %s", self.__get_pos_in_center(70), font, placeholder_key=self.RAY_POS_KEY),
+                                           TextObject("Total Collisions %d", self.__get_pos_in_center(90), font, placeholder_key=self.NUM_COLLS_KEY),
+                                           TextObject("Total Updates %d", self.__get_pos_in_center(110), font, placeholder_key=self.CUR_STEP_KEY),
+                                           TextObject("Obstacles %d", self.__get_pos_in_center(150), font, placeholder_key=self.TOTAL_OBSTACLES_KEY),
+                                           TextObject("Moves / Frame %d", self.__get_pos_in_center(170), font, placeholder_key=self.UPDATES_PER_FRAME_KEY),
+                                           TextObject("Speed pxl / Update %s", self.__get_pos_in_center(190), font, placeholder_key=self.RAY_SPEED_KEY)] )
 
-        self.running_texts = TextManager( [TextObject("FPS %d", self.__get_pos_in_center(30), font),
-                                           TextObject("Laser Pos %s", self.__get_pos_in_center(70), font),
-                                           TextObject("Total Collisions %d", self.__get_pos_in_center(90), font),
-                                           TextObject("Total Updates %d", self.__get_pos_in_center(110), font),
-                                           TextObject("Obstacles %d", self.__get_pos_in_center(150), font),
-                                           TextObject("Moves / Frame %d", self.__get_pos_in_center(170), font),
-                                           TextObject("Speed pxl / Update %s", self.__get_pos_in_center(190), font)] )
-
-        self.RAY_POS_INDEX = 0
-        self.RAY_ROT_INDEX = 1
-        self.ray_selected = TextManager([TextObject("Pos %s", self.__get_pos_in_center(self.h - 180), font),
-                                         TextObject("Rotation %d", self.__get_pos_in_center(self.h - 160), font),
+        self.ray_selected = TextManager([TextObject("Pos %s", self.__get_pos_in_center(self.h - 180), font, placeholder_key=self.RAY_POS_KEY),
+                                         TextObject("Rotation %d", self.__get_pos_in_center(self.h - 160), font, placeholder_key=self.RAY_ROT_KEY),
                                          TextObject("Arrows to Rotate", self.__get_pos_in_center(self.h - 120), font),
                                          TextObject("Mouse to Move", self.__get_pos_in_center(self.h - 100), font)])
+
 
     def __get_pos_in_center(self, y_pos: int) -> tuple:
         """Returns a tuple position that is in the center of the sidebar with a variable y_pos"""
         return (self.x + self.w / 2, y_pos)
 
 
-    def update_running_texts(self) -> None:
-        self.running_texts.text_objects[self.LASER_POS_INDEX]       .set_placeholder( str(stats.ray_pos_rounded) )
-        self.running_texts.text_objects[self.FPS_INDEX]             .set_placeholder( stats.fps )
-        self.running_texts.text_objects[self.TOTAL_COLLS_INDEX]     .set_placeholder( stats.num_collisions )
-        self.running_texts.text_objects[self.TOTAL_UPDATES_INDEX]   .set_placeholder( stats.current_ray_step )
-
-
-    def update_obstacle_texts(self) -> None:
-        _curr_obst = obstacle_manager.get_selected_obstacle()
-
-        self.obstacle_selected_texts.text_objects[self.POS_INDEX]       .set_placeholder(str(_curr_obst.get_pos()))
-        self.obstacle_selected_texts.text_objects[self.SCALE_INDEX]     .set_placeholder(_curr_obst.get_size())
-        self.obstacle_selected_texts.text_objects[self.ROTATION_INDEX]  .set_placeholder(_curr_obst.get_rotation())
-
-
-    def update_ray_texts(self) -> None:
-        self.ray_selected.text_objects[self.RAY_POS_INDEX]          .set_placeholder(str(stats.ray_pos_rounded))
-        self.ray_selected.text_objects[self.RAY_ROT_INDEX]          .set_placeholder(stats.ray_rotation)
-
-
     def draw(self, screen) -> None:
         screen.blit(self.surf, (self.x, self.y))
+        self.__update_texts_data()
         self.selected_state = self.determine_state()
 
         match (self.selected_state):
@@ -133,16 +139,13 @@ class Sidebar():
                 
             case SelectedState.OBSTACLE:
                 self.draw_not_running(screen)
-                self.update_obstacle_texts()
                 self.obstacle_selected_texts.render_text(screen)
             
             case SelectedState.RAY:
                 self.draw_not_running(screen)
-                self.update_ray_texts()
                 self.ray_selected.render_text(screen)
 
             case SelectedState.RUNNING:
-                self.update_running_texts()
                 self.running_texts.render_text(screen)
 
 
@@ -151,6 +154,7 @@ class Sidebar():
         self.spawn_circle_button.draw(screen)
         self.spawn_square_button.draw(screen)
         self.inputfields.draw(screen)
+
 
     def determine_state(self) -> SelectedState:
         if stats.simulation_running:
@@ -195,13 +199,9 @@ class Sidebar():
 
     def on_simulation_start(self) -> None:
         stats.simulation_running = True
-
-        self.inputfields.fix_strings()
-
+        stats.total_obstacles = len(obstacle_manager.get_obstacles())
+        
         settings.max_fps =                  self.inputfields.get_inputfield_at_index(self.CONFIG_FPS_INDEX).return_val()
         settings.ray_updates_per_frame =    self.inputfields.get_inputfield_at_index(self.CONFIG_UPDATES_FRAME_INDEX).return_val()
-        
-        stats.total_obstacles = len(obstacle_manager.get_obstacles())
-        self.running_texts.text_objects[self.TOTAL_OBSTS_INDEX]     .set_placeholder( stats.total_obstacles )
-        self.running_texts.text_objects[self.MOVES_PER_FRAME]       .set_placeholder( settings.ray_updates_per_frame )
-        self.running_texts.text_objects[self.PXL_PER_UPDATE]        .set_placeholder( '{0:.1f}'.format(settings.ray_step_size) )
+
+        self.inputfields.fix_strings()
