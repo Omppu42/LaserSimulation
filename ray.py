@@ -128,8 +128,7 @@ class Ray():
     
 
     def calculate_bounce_angle(self, normal: tuple) -> None:
-        move_vec_mag = math.sqrt(math.pow(self.x - (self.x + self.move_vec[0]), 2) + math.pow(self.y - (self.y + self.move_vec[1]), 2))
-        normalized_move = (self.move_vec[0] / move_vec_mag, self.move_vec[1] / move_vec_mag)
+        normalized_move = (self.move_vec[0] / settings.ray_step_size, self.move_vec[1] / settings.ray_step_size)
 
         dot = 2 * np.dot(normalized_move, normal)
         self.move_vec = ((normalized_move[0] - dot * normal[0]) * settings.ray_step_size,
