@@ -48,7 +48,7 @@ class Ray():
 
 
     def calculate_ray(self) -> None:
-        pygame.draw.line(self.rays_surface, (125,0,0), (self.x, self.y), (self.x + self.move_vec[0], self.y + self.move_vec[1]))
+        pygame.draw.line(self.rays_surface, (125,0,0), (self.x, self.y), (self.x + self.move_vec[0], self.y + self.move_vec[1]), 2)
 
 
     def clear_surface(self) -> None:

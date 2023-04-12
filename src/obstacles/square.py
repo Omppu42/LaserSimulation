@@ -18,21 +18,27 @@ class SquareObstacle(ObstacleSuper):
 
 
     def update_drawing(self):
+         # Convert the rotation angle from degrees to radians.
         self.rotation_rad = self.rotation_deg * math.pi/180
-
+        
+        # Define the points of the object as a list of tuples (x,y) based on its current position and radius.
         self.points_xy = [(self.x - self.radius, self.y - self.radius),
-                          (self.x - self.radius, self.y + self.radius),
-                          (self.x + self.radius, self.y + self.radius),
-                          (self.x + self.radius, self.y - self.radius)]
-
+                        (self.x - self.radius, self.y + self.radius),
+                        (self.x + self.radius, self.y + self.radius),
+                        (self.x + self.radius, self.y - self.radius)]
+        
+        # Define the rotation matrix based on the current rotation angle.
         rotation_matrix = [[math.cos(self.rotation_rad), -math.sin(self.rotation_rad)],
-                           [math.sin(self.rotation_rad),  math.cos(self.rotation_rad)]]
+                        [math.sin(self.rotation_rad),  math.cos(self.rotation_rad)]]
         
+        # Translate the points of the object so that they are centered at the origin.
         translated_points = [(p[0] - self.x, p[1] - self.y) for p in self.points_xy]
-
-        rotated_points = [(rotation_matrix[0][0]*p[0] + rotation_matrix[0][1]*p[1], 
-                           rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
         
+        # Rotate the translated points using the rotation matrix.
+        rotated_points = [(rotation_matrix[0][0]*p[0] + rotation_matrix[0][1]*p[1], 
+                        rotation_matrix[1][0]*p[0] + rotation_matrix[1][1]*p[1]) for p in translated_points]
+        
+        # Translate the rotated points back to their original position.
         self.points_xy = [(p[0] + self.x, p[1] + self.y) for p in rotated_points]
 
 
