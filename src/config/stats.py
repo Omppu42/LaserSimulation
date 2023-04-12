@@ -11,6 +11,9 @@ class Stats():
         self.can_start = True
         self.ray_selected = False
 
+        self.ray_starting_rotation = 0
+        self.ray_starting_pos = (0, 0)
+
         self.ray_pos_rounded = (0, 0)
         self.sidebar_texts_data = {}
 

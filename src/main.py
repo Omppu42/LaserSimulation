@@ -17,15 +17,15 @@ def main():
     from obstacles.obstacle_manager import obstacle_manager
     from event_handler import handle_events
 
-    #TODO: Reset the simulation
     #TODO: Save and load presets
 
     clock = pygame.time.Clock()
 
-    sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
-                      (settings.sidebar_width, settings.screen_height))
-    
     ray = Ray((500, 250), (settings.screen_width - settings.sidebar_width, settings.screen_height), 260)
+
+    sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
+                      (settings.sidebar_width, settings.screen_height), ray)
+    
     ray.calculate_ray()
 
     while True:

@@ -26,15 +26,18 @@ class SelectedState(Enum):
     RUNNING = 3
 
 class Sidebar():
-    def __init__(self, pos: tuple, size: tuple) -> None:
+    def __init__(self, pos: tuple, size: tuple, ray: Ray) -> None:
         self.x, self.y = pos
         self.w, self.h = size
 
         self.surf = pygame.Surface((self.w, self.h))
         self.surf.fill((10, 10, 10))
 
+        self.ray_ref = ray
+
         button_font = pygame.font.Font(settings.global_font_path, 26)
         self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start Simulation", font=button_font, border=2)
+        self.reset_button = Button(self.x + self.w / 2, self.h - 50, 100, 50, text="Reset", font=button_font, border=2)
 
         self.spawn_square_button = ImageButton((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
         self.spawn_circle_button = ImageButton((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
@@ -129,6 +132,16 @@ class Sidebar():
         return (self.x + self.w / 2, y_pos)
 
 
+    def __reset_sim(self) -> None:
+        stats.simulation_running = False
+
+        self.ray_ref.x, self.ray_ref.y = stats.ray_starting_pos
+        self.ray_ref.dir_deg = stats.ray_starting_rotation
+
+        stats.num_collisions = 0
+        stats.current_ray_step = 0
+
+
     def draw(self, screen) -> None:
         screen.blit(self.surf, (self.x, self.y))
         self.__update_texts_data()
@@ -149,6 +162,7 @@ class Sidebar():
 
             case SelectedState.RUNNING:
                 self.running_texts.render_text(screen)
+                self.reset_button.draw(screen)
 
 
     def draw_not_running(self, screen) -> None:
@@ -174,16 +188,25 @@ class Sidebar():
 
 
     def check_mouse_motion(self):
-        if stats.simulation_running == True: return
+        if self.selected_state == SelectedState.RUNNING: 
+            self.reset_button.check_hover(pygame.mouse.get_pos())
+            return
 
+        # when not running
         if stats.can_start: self.play_button.check_hover(pygame.mouse.get_pos())
+
         self.spawn_square_button.check_hover(pygame.mouse.get_pos())
         self.spawn_circle_button.check_hover(pygame.mouse.get_pos())
     
 
     def check_click(self, ray: Ray) -> None:
-        if stats.simulation_running == True: return
-
+        if self.selected_state == SelectedState.RUNNING:
+            if self.reset_button.check_click():
+                self.__reset_sim()
+                
+            return
+        
+        # when not running
         self.inputfields.check_click()
 
         if self.spawn_square_button.check_click():
@@ -195,6 +218,7 @@ class Sidebar():
         if stats.can_start and self.play_button.check_click():
             self.on_simulation_start()
             ray.clear_surface()
+
 
 
     def handle_key_pressed(self, event) -> None:
@@ -209,3 +233,6 @@ class Sidebar():
         settings.ray_updates_per_frame =    self.inputfields.get_inputfield_at_index(self.CONFIG_UPDATES_FRAME_INDEX).return_val()
 
         self.inputfields.fix_strings()
+
+        stats.ray_starting_pos = (self.ray_ref.x, self.ray_ref.y)
+        stats.ray_starting_rotation = self.ray_ref.dir_deg

@@ -20,6 +20,9 @@ class Ray():
         
         self.last_object_hit = None
 
+        stats.ray_starting_pos = start_pos
+        stats.ray_starting_rotation = dir_deg
+
         self.update_start_surface()
 
 
