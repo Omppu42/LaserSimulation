@@ -1,4 +1,4 @@
-import os, json, time, datetime
+import os, json, datetime
 import tkinter as tk
 import pygame
 pygame.init()
@@ -63,7 +63,6 @@ class Exporter():
 
     def export_into_folder(self, folder_name: str) -> None:
         path = os.path.join(settings.export_dir, folder_name)
-        print("path=",path)
 
         self.give_name_label.destroy()
         self.name_entry.destroy()

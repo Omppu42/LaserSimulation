@@ -15,6 +15,7 @@ from config.stats import stats
 from config.settings import settings
 
 from import_export.export import Exporter
+from import_export._import import Importer
 
 from ray import Ray
 
@@ -49,6 +50,7 @@ class Sidebar():
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
         self.exporter = Exporter(screen)
+        self.importer = Importer()
 
         self.__init_keys()
         self.__update_texts_data()
@@ -224,7 +226,7 @@ class Sidebar():
         self.inputfields.check_click()
 
         if self.import_button.check_click():
-            print("Import")
+            self.importer.import_data()
 
         if self.export_button.check_click():
             self.exporter.export_data()
