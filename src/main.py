@@ -1,9 +1,16 @@
-import cProfile, os
+import cProfile, os, sys
+
+ver = sys.version_info
+if ver.major != 3  or ver.minor > 10:
+    raise Exception("Please use Python 3.9 - 3.10. Python version 3.11 isn't supported")
+
+if ver.major == 3 and ver.minor < 9:
+    print("CAUTION: The program is supposed to be run with Python version 3.9. Going bellow this there might be some bugs.")
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
 import pygame
 pygame.init()
-
 
 def main():
     from config.settings import settings
@@ -18,13 +25,14 @@ def main():
     from event_handler import handle_events
 
     #TODO: Save and load presets
+    #TODO: Create export and import icons
 
     clock = pygame.time.Clock()
 
     ray = Ray((500, 250), (settings.screen_width - settings.sidebar_width, settings.screen_height), 260)
 
     sidebar = Sidebar((settings.screen_width - settings.sidebar_width, 0), 
-                      (settings.sidebar_width, settings.screen_height), ray)
+                      (settings.sidebar_width, settings.screen_height), ray, screen)
     
     ray.calculate_ray()
 

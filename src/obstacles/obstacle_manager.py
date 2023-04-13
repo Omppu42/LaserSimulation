@@ -3,6 +3,7 @@ pygame.init()
 
 from obstacles.square import SquareObstacle
 from obstacles.circle import CircleObstacle
+from obstacles.obstacle import ObstacleSuper
 
 from config.stats import stats
 
@@ -22,11 +23,10 @@ class ObstacleManager():
         self.selected_index = -1
 
 
-    def get_obstacles(self) -> list[SquareObstacle | CircleObstacle]:
+    def get_obstacles(self) -> list[ObstacleSuper]:
         return self.__all_obstacles
-    
 
-    def get_selected_obstacle(self) -> SquareObstacle | CircleObstacle:
+    def get_selected_obstacle(self) -> ObstacleSuper:
         return self.__all_obstacles[self.selected_index]
     
 

@@ -4,7 +4,9 @@ class Settings():
         self.screen_height = 800
         self.sidebar_width = 300
         self.bg_color = (0, 0, 0)
+
         self.global_font_path = "Assets/Roboto-Regular.ttf"
+        self.export_dir = "exports/"
 
         self.profile = False
 

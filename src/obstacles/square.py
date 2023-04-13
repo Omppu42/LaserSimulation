@@ -17,6 +17,29 @@ class SquareObstacle(ObstacleSuper):
         return ((point2[0] - point1[0]), (point2[1] - point1[1]))
 
 
+    def __get_closest_point(self, A, B, P) -> tuple:
+        """Get closest point on the edge AB from point P"""
+        a_to_p = [P[0] - A[0], P[1] - A[1]]     # Storing vector A->P
+        a_to_b = [B[0] - A[0], B[1] - A[1]]     # Storing vector A->B
+
+        atb2 = a_to_b[0]**2 + a_to_b[1]**2 # distance squared
+
+        atp_dot_atb = a_to_p[0]*a_to_b[0] + a_to_p[1]*a_to_b[1] # The dot product of a_to_p and a_to_b
+
+        t = atp_dot_atb / atb2              # The normalized distance from a to your closest point 
+
+        return (A[0] + a_to_b[0]*t, A[1] + a_to_b[1]*t)
+    
+
+    def __get_vertex_distances(self, point: tuple) -> list:
+        distances = [math.sqrt(math.pow((point[0] - self.points_xy[0][0]), 2) + math.pow((point[1] - self.points_xy[0][1]), 2)),
+                     math.sqrt(math.pow((point[0] - self.points_xy[1][0]), 2) + math.pow((point[1] - self.points_xy[1][1]), 2)),
+                     math.sqrt(math.pow((point[0] - self.points_xy[2][0]), 2) + math.pow((point[1] - self.points_xy[2][1]), 2)),
+                     math.sqrt(math.pow((point[0] - self.points_xy[3][0]), 2) + math.pow((point[1] - self.points_xy[3][1]), 2))]
+
+        return distances
+    
+
     def update_drawing(self):
          # Convert the rotation angle from degrees to radians.
         self.rotation_rad = self.rotation_deg * math.pi/180
@@ -44,7 +67,7 @@ class SquareObstacle(ObstacleSuper):
 
     def find_normal_at_point(self, point: tuple) -> tuple:
         """Returns a vector containing the surface's normal from the point of impact"""
-        distances = self.get_vertex_distances(point)
+        distances = self.__get_vertex_distances(point)
         s = set(distances)
         s = sorted(s)
 
@@ -57,12 +80,10 @@ class SquareObstacle(ObstacleSuper):
         self.closest_point = self.points_xy[distances.index(min_dist)]
         self.second_closest_point = self.points_xy[distances.index(second_min_dist)]
 
-        point = self.get_closest_point(self.closest_point, self.second_closest_point, point)
+        point = self.__get_closest_point(self.closest_point, self.second_closest_point, point)
 
         vec = (self.second_closest_point[0] - self.closest_point[0], self.second_closest_point[1] - self.closest_point[1])
         vec = (vec[1] + point[0], -vec[0] + point[1])
-
-        # visualizing
 
         vec_mag = math.sqrt( math.pow(vec[0] - point[0], 2) + math.pow(vec[1] - point[1], 2))
         
@@ -72,32 +93,8 @@ class SquareObstacle(ObstacleSuper):
         return vec
 
 
-    def get_vertex_distances(self, point: tuple) -> list:
-        distances = [math.sqrt(math.pow((point[0] - self.points_xy[0][0]), 2) + math.pow((point[1] - self.points_xy[0][1]), 2)),
-                     math.sqrt(math.pow((point[0] - self.points_xy[1][0]), 2) + math.pow((point[1] - self.points_xy[1][1]), 2)),
-                     math.sqrt(math.pow((point[0] - self.points_xy[2][0]), 2) + math.pow((point[1] - self.points_xy[2][1]), 2)),
-                     math.sqrt(math.pow((point[0] - self.points_xy[3][0]), 2) + math.pow((point[1] - self.points_xy[3][1]), 2))]
-
-        return distances
-
-
-    def get_closest_point(self, A, B, P) -> tuple:
-        """Get closest point on the edge AB from point P"""
-        a_to_p = [P[0] - A[0], P[1] - A[1]]     # Storing vector A->P
-        a_to_b = [B[0] - A[0], B[1] - A[1]]     # Storing vector A->B
-
-        atb2 = a_to_b[0]**2 + a_to_b[1]**2 # distance squared
-
-        atp_dot_atb = a_to_p[0]*a_to_b[0] + a_to_p[1]*a_to_b[1] # The dot product of a_to_p and a_to_b
-
-        t = atp_dot_atb / atb2              # The normalized distance from a to your closest point 
-
-        return (A[0] + a_to_b[0]*t, A[1] + a_to_b[1]*t)
-
-
     def check_point_inside(self, point: tuple) -> bool:
         """Check if point is inside the sqare"""
-        # TODO: Better performance can be achieved by removing function call overhead, just paste lines into here. Will look bad though
         AB = self.__vec(self.points_xy[0], self.points_xy[1])
         AM = self.__vec(self.points_xy[0], point)
         BC = self.__vec(self.points_xy[1], self.points_xy[2])
@@ -117,3 +114,12 @@ class SquareObstacle(ObstacleSuper):
             pygame.draw.lines(screen, (250,250,250), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
         else:
             pygame.draw.lines(screen, (180,180,180), True, (self.points_xy[0],self.points_xy[1],self.points_xy[2],self.points_xy[3]))
+
+    
+    def make_json_save(self) -> dict:
+        out = {}
+        out["position"] = {"x": self.x, "y": self.y}
+        out["rotation"] = self.rotation_deg
+        out["scale"] = self.radius
+        
+        return out

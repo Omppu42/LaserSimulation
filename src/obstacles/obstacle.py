@@ -53,4 +53,13 @@ class ObstacleSuper():
 
 
     def update_drawing(self):
-        raise NotImplementedError("Not implemented")
+        pass
+    
+    def check_point_inside(self):
+        pass
+
+    def find_normal_at_point(self):
+        pass
+
+    def make_json_save(self) -> dict:
+        pass

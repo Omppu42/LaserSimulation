@@ -14,6 +14,8 @@ from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
 from config.settings import settings
 
+from import_export.export import Exporter
+
 from ray import Ray
 
 from enum import Enum
@@ -26,7 +28,7 @@ class SelectedState(Enum):
     RUNNING = 3
 
 class Sidebar():
-    def __init__(self, pos: tuple, size: tuple, ray: Ray) -> None:
+    def __init__(self, pos: tuple, size: tuple, ray: Ray, screen) -> None:
         self.x, self.y = pos
         self.w, self.h = size
 
@@ -39,10 +41,14 @@ class Sidebar():
         self.play_button = Button(self.x + self.w / 2, self.h - 50, 200, 50, text="Start Simulation", font=button_font, border=2)
         self.reset_button = Button(self.x + self.w / 2, self.h - 50, 100, 50, text="Reset", font=button_font, border=2)
 
-        self.spawn_square_button = ImageButton((self.x + self.w - 50, self.h - 250), (48, 48), "assets/sqare_icon.png", border=2)
-        self.spawn_circle_button = ImageButton((self.x + self.w - 50, self.h - 300), (48, 48), "assets/circle_icon.png", border=2)
+        self.spawn_square_button = ImageButton((self.x + 40, 20), (48, 48), "assets/sqare_icon.png", border=2)
+        self.spawn_circle_button = ImageButton((self.x + 90, 20), (48, 48), "assets/circle_icon.png", border=2)
+
+        self.export_button = ImageButton((self.x + 160, 20), (48, 48), "assets/circle_icon.png", border=2)
+        self.import_button = ImageButton((self.x + 210, 20), (48, 48), "assets/circle_icon.png", border=2)
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
+        self.exporter = Exporter(screen)
 
         self.__init_keys()
         self.__update_texts_data()
@@ -147,27 +153,30 @@ class Sidebar():
         self.__update_texts_data()
         self.selected_state = self.determine_state()
 
-        match (self.selected_state):
-            case SelectedState.NO_OBSTACLE:
-                self.draw_not_running(screen)
-                self.no_obstacle_selected_texts.render_text(screen)
-                
-            case SelectedState.OBSTACLE:
-                self.draw_not_running(screen)
-                self.obstacle_selected_texts.render_text(screen)
-            
-            case SelectedState.RAY:
-                self.draw_not_running(screen)
-                self.ray_selected.render_text(screen)
+        # States
+        if self.selected_state == SelectedState.NO_OBSTACLE:
+            self.draw_not_running(screen)
+            self.no_obstacle_selected_texts.render_text(screen)
 
-            case SelectedState.RUNNING:
-                self.running_texts.render_text(screen)
-                self.reset_button.draw(screen)
+        elif self.selected_state == SelectedState.OBSTACLE:
+            self.draw_not_running(screen)
+            self.obstacle_selected_texts.render_text(screen)
+
+        elif self.selected_state == SelectedState.RAY:
+            self.draw_not_running(screen)
+            self.ray_selected.render_text(screen)
+
+        elif self.selected_state == SelectedState.RUNNING:
+            self.running_texts.render_text(screen)
+            self.reset_button.draw(screen)
 
 
     def draw_not_running(self, screen) -> None:
         if stats.can_start: self.play_button.draw(screen)
         else:               self.cant_start.render_text(screen)
+
+        self.import_button.draw(screen)
+        self.export_button.draw(screen)
 
         self.spawn_circle_button.draw(screen)
         self.spawn_square_button.draw(screen)
@@ -195,8 +204,13 @@ class Sidebar():
         # when not running
         if stats.can_start: self.play_button.check_hover(pygame.mouse.get_pos())
 
-        self.spawn_square_button.check_hover(pygame.mouse.get_pos())
-        self.spawn_circle_button.check_hover(pygame.mouse.get_pos())
+        mouse_pos = pygame.mouse.get_pos()
+
+        self.import_button.check_hover(mouse_pos)
+        self.export_button.check_hover(mouse_pos)
+
+        self.spawn_square_button.check_hover(mouse_pos)
+        self.spawn_circle_button.check_hover(mouse_pos)
     
 
     def check_click(self, ray: Ray) -> None:
@@ -208,6 +222,12 @@ class Sidebar():
         
         # when not running
         self.inputfields.check_click()
+
+        if self.import_button.check_click():
+            print("Import")
+
+        if self.export_button.check_click():
+            self.exporter.export_data()
 
         if self.spawn_square_button.check_click():
             obstacle_manager.spawn_square()

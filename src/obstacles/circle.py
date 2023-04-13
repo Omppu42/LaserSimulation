@@ -68,3 +68,11 @@ class CircleObstacle(ObstacleSuper):
         normal = (normal[0] / length, normal[1] / length)
 
         return normal
+    
+
+    def make_json_save(self) -> dict:
+        out = {}
+        out["position"] = {"x": self.x, "y": self.y}
+        out["scale"] = self.radius
+
+        return out
