@@ -120,7 +120,7 @@ class Sidebar():
         # display these when NO obstacle is selected
         self.no_obstacle_selected_texts = TextManager( [TextObject("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
 
-        self.not_running_texts = TextManager( [TextObject("Current scene: %s", self.__get_pos_in_center(110), font, placeholder_key=self.CURRENT_SCENE)] )
+        self.not_running_texts = TextManager( [TextObject("Scene: %s", self.__get_pos_in_center(110), font, placeholder_key=self.CURRENT_SCENE)] )
 
         # display when simulation running
         self.running_texts = TextManager( [TextObject("FPS %d", self.__get_pos_in_center(30), font, placeholder_key=self.FPS_KEY),

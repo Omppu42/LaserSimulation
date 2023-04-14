@@ -14,6 +14,17 @@ class Exporter():
         self.screen = screen
         self.ray = ray
 
+    def validate(self, P):
+        if len(P) == 0:
+            # empty Entry is ok
+            return True
+        elif len(P) <= 20 and (P.isdigit() or P.isascii()):
+            # Entry with 1 digit is ok
+            return True
+        else:
+            # Anything else, reject it
+            return False
+
     def export_data(self) -> None:
         self.no_name_error_label = None
 
@@ -26,7 +37,8 @@ class Exporter():
         self.give_name_label = tk.Label(text="Give the file a name", font=18)
         self.give_name_label.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
 
-        self.name_entry = tk.Entry(width=20, font=18)
+        vcmd = (self.window.register(self.validate), '%P')
+        self.name_entry = tk.Entry(width=20, font=18, validate="key", validatecommand=vcmd)
         self.name_entry.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
         self.cancel_button = tk.Button(text="Cancel", command=self.cancel)
