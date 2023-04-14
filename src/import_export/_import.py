@@ -79,7 +79,8 @@ class Importer():
     BTN_SELECTED_COLOR = "gray75"
     FRAME_BG = "gray50"
     
-    def __init__(self, screen, ray) -> None:
+    def __init__(self, sidebar, screen, ray) -> None:
+        self.sidebar = sidebar
         self.screen = screen
         self.ray = ray
 
@@ -137,9 +138,11 @@ class Importer():
         obstacle_manager.load_from_json(data)
         
         name = os.path.basename(self.selected_save["path"])
+        stats.current_scene = name
         self.select_a_save_label.config(text=f"Loaded: {name}")
 
         self.ray.draw_ray(self.screen)
+        self.sidebar.draw(self.screen)
         obstacle_manager.draw_obstacles(self.screen)
         pygame.display.update()
 

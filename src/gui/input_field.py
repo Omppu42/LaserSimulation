@@ -114,7 +114,7 @@ class NumberInputField():
             placeholder_txt.set_alpha(100)
             self.__draw_text(placeholder_txt)
         else:
-            text = self.font.render(self.text, False, self.text_color)
+            text = self.font.render(self.text, True, self.text_color)
             self.__draw_text(text)
         screen.blit(self.image, (self.x, self.y))
     

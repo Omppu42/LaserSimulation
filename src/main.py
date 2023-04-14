@@ -28,8 +28,6 @@ def main():
     from event_handler import handle_events
 
     #TODO: add to pygame window 'currently loaded' and the save name
-    #TODO: Save and load presets
-    #TODO: Create export and import icons
 
     clock = pygame.time.Clock()
 

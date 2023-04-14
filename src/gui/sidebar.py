@@ -45,12 +45,12 @@ class Sidebar():
         self.spawn_square_button = ImageButton((self.x + 40, 20), (48, 48), "assets/sqare_icon.png", border=2)
         self.spawn_circle_button = ImageButton((self.x + 90, 20), (48, 48), "assets/circle_icon.png", border=2)
 
-        self.export_button = ImageButton((self.x + 160, 20), (48, 48), "assets/circle_icon.png", border=2)
-        self.import_button = ImageButton((self.x + 210, 20), (48, 48), "assets/circle_icon.png", border=2)
+        self.export_button = ImageButton((self.x + 160, 20), (48, 48), "assets/export.png", border=2)
+        self.import_button = ImageButton((self.x + 210, 20), (48, 48), "assets/import.png", border=2)
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
         self.exporter = Exporter(screen, self.ray_ref)
-        self.importer = Importer(screen, self.ray_ref)
+        self.importer = Importer(self, screen, self.ray_ref)
 
         self.__init_keys()
         self.__update_texts_data()
@@ -74,6 +74,7 @@ class Sidebar():
 
         self.UPDATES_PER_FRAME_KEY = "updates_per_frame"
         self.TOTAL_OBSTACLES_KEY = "total_obsts"
+        self.CURRENT_SCENE = "current_scene"
 
 
     def __update_texts_data(self) -> None:
@@ -93,6 +94,7 @@ class Sidebar():
 
         stats.sidebar_texts_data[self.UPDATES_PER_FRAME_KEY] = settings.ray_updates_per_frame
         stats.sidebar_texts_data[self.TOTAL_OBSTACLES_KEY] = stats.total_obstacles
+        stats.sidebar_texts_data[self.CURRENT_SCENE] = stats.current_scene
 
 
     def __init_inputfields(self) -> None:
@@ -117,6 +119,8 @@ class Sidebar():
 
         # display these when NO obstacle is selected
         self.no_obstacle_selected_texts = TextManager( [TextObject("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
+
+        self.not_running_texts = TextManager( [TextObject("Current scene: %s", self.__get_pos_in_center(110), font, placeholder_key=self.CURRENT_SCENE)] )
 
         # display when simulation running
         self.running_texts = TextManager( [TextObject("FPS %d", self.__get_pos_in_center(30), font, placeholder_key=self.FPS_KEY),
@@ -175,7 +179,9 @@ class Sidebar():
 
     def draw_not_running(self, screen) -> None:
         if stats.can_start: self.play_button.draw(screen)
-        else:               self.cant_start.render_text(screen)
+        else: self.cant_start.render_text(screen)
+
+        self.not_running_texts.render_text(screen)
 
         self.import_button.draw(screen)
         self.export_button.draw(screen)
