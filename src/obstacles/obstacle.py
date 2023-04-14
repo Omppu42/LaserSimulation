@@ -63,3 +63,6 @@ class ObstacleSuper():
 
     def make_json_save(self) -> dict:
         pass
+
+    def load_from_json(self, dict) -> None:
+        pass

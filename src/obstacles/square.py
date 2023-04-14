@@ -123,3 +123,15 @@ class SquareObstacle(ObstacleSuper):
         out["scale"] = self.radius
         
         return out
+    
+
+    def load_from_json(self, dict) -> None:
+        square_part = dict["squares"]
+
+        self.x = square_part["position"]["x"]
+        self.y = square_part["position"]["y"]
+
+        self.radius = square_part["scale"]
+        self.rotation_deg = square_part["rotation"]
+
+        self.update_drawing()

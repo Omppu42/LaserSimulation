@@ -136,3 +136,21 @@ class Ray():
         dot = 2 * np.dot(normalized_move, normal)
         self.move_vec = ((normalized_move[0] - dot * normal[0]) * settings.ray_step_size,
                             (normalized_move[1] - dot * normal[1]) * settings.ray_step_size)
+        
+
+    def make_json_object(self) -> dict:
+        out = {}
+        out["position"] = {"x": self.x, "y": self.y}
+        out["rotation"] = self.dir_deg
+
+        return out
+    
+    def load_from_json(self, dict) -> None:
+        ray_part = dict["ray"]
+
+        self.x = ray_part["position"]["x"]
+        self.y = ray_part["position"]["y"]
+
+        self.dir_deg = ray_part["rotation"]
+
+        self.update_start_surface()

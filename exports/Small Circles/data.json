@@ -1,0 +1,151 @@
+{
+  "saved_time": "14/04/2023 17:39",
+  "ray": {
+    "position": {
+      "x": 491,
+      "y": 514
+    },
+    "rotation": 240
+  },
+  "squares": [
+    {
+      "position": {
+        "x": 393,
+        "y": 343
+      },
+      "rotation": 72,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 250,
+        "y": 525
+      },
+      "rotation": 82,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 475,
+        "y": 675
+      },
+      "rotation": 70,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 600,
+        "y": 480
+      },
+      "rotation": 70,
+      "scale": 100
+    }
+  ],
+  "circles": [
+    {
+      "position": {
+        "x": 399,
+        "y": 513
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 429,
+        "y": 510
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 424,
+        "y": 535
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 468,
+        "y": 489
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 439,
+        "y": 474
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 461,
+        "y": 527
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 388,
+        "y": 470
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 418,
+        "y": 484
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 382,
+        "y": 567
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 407,
+        "y": 557
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 366,
+        "y": 524
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 488,
+        "y": 538
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 459,
+        "y": 448
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 363,
+        "y": 490
+      },
+      "scale": 5
+    },
+    {
+      "position": {
+        "x": 451,
+        "y": 558
+      },
+      "scale": 5
+    }
+  ]
+}

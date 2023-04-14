@@ -10,8 +10,9 @@ from obstacles.square import SquareObstacle
 from obstacles.circle import CircleObstacle
 
 class Exporter():
-    def __init__(self, screen) -> None:
+    def __init__(self, screen, ray) -> None:
         self.screen = screen
+        self.ray = ray
 
     def export_data(self) -> None:
         self.no_name_error_label = None
@@ -107,10 +108,8 @@ class Exporter():
     def create_json_output(self) -> list:
         output = {}
 
-        output["saved_time"] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        output["ray"] = {"position": {"x": stats.ray_starting_pos[0], 
-                                      "y": stats.ray_starting_pos[1]},
-                         "rotation": stats.ray_starting_rotation}
+        output["saved_time"] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        output["ray"] = self.ray.make_json_object()
 
         square_data = []
         circle_data = []

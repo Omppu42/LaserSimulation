@@ -49,8 +49,8 @@ class Sidebar():
         self.import_button = ImageButton((self.x + 210, 20), (48, 48), "assets/circle_icon.png", border=2)
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
-        self.exporter = Exporter(screen)
-        self.importer = Importer()
+        self.exporter = Exporter(screen, self.ray_ref)
+        self.importer = Importer(screen, self.ray_ref)
 
         self.__init_keys()
         self.__update_texts_data()
@@ -101,8 +101,8 @@ class Sidebar():
         self.CONFIG_FPS_INDEX = 0
         self.CONFIG_UPDATES_FRAME_INDEX = 1
 
-        self.inputfields = TextWithInputManager( [TextWithInputObject("Max FPS",          self.x + 20, 400, "600", 3, textfield_font, empty_field_value=1, int_only=True),
-                                                  TextWithInputObject("Updates / Frame",  self.x + 20, 440, "50", 2, textfield_font, empty_field_value=1, int_only=True)] )
+        self.inputfields = TextWithInputManager( [TextWithInputObject("Max FPS",          self.x + 20, 400, "60", 3, textfield_font, empty_field_value=1, int_only=True),
+                                                  TextWithInputObject("Updates / Frame",  self.x + 20, 440, "15", 2, textfield_font, empty_field_value=1, int_only=True)] )
 
 
     def __init_texts(self) -> None:

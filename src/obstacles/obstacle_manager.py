@@ -23,6 +23,24 @@ class ObstacleManager():
         self.selected_index = -1
 
 
+    def load_from_json(self, dict) -> None:
+        self.__obstacles_square = []
+        self.__obstacles_circle = []
+
+        for _square in dict["squares"]:
+            self.__obstacles_square.append( SquareObstacle( (_square["position"]["x"], _square["position"]["y"]),
+                                                             _square["scale"], _square["rotation"]) )
+
+        for _circle in dict["circles"]:
+            self.__obstacles_square.append( CircleObstacle((_circle["position"]["x"], _circle["position"]["y"]),
+                                                            _circle["scale"]) )
+
+        self.__obstacles_square.sort(key=lambda x: x.radius)
+        self.__obstacles_circle.sort(key=lambda x: x.radius)
+
+        self.__all_obstacles = self.__obstacles_circle + self.__obstacles_square
+        self.selected_index = -1
+
     def get_obstacles(self) -> list[ObstacleSuper]:
         return self.__all_obstacles
 

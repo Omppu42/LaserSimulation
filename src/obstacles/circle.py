@@ -76,3 +76,13 @@ class CircleObstacle(ObstacleSuper):
         out["scale"] = self.radius
 
         return out
+    
+    def load_from_json(self, dict) -> None:
+        circle_part = dict["circle"]
+
+        self.x = circle_part["position"]["x"]
+        self.y = circle_part["position"]["y"]
+
+        self.radius = circle_part["scale"]
+
+        self.update_drawing()
