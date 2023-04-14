@@ -1,4 +1,4 @@
-import os, json, datetime
+import os, json
 import tkinter as tk
 from tkinter import ttk
 import pygame
@@ -10,8 +10,6 @@ from PIL import ImageTk, Image
 from config.settings import settings
 from config.stats import stats
 from obstacles.obstacle_manager import obstacle_manager
-from obstacles.square import SquareObstacle
-from obstacles.circle import CircleObstacle
 
 class ScrollableFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -178,7 +176,6 @@ class Importer():
 
             self.selection_buttons.append(button)
     
-            #TODO: Add 'last time loaded' label and sort by it: last time loaded should be the top on
             tk.Label(master=frame, text=f"Name: {name}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.1, anchor=tk.CENTER)
             tk.Label(master=frame, text=f"Saved: {saved}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.25, anchor=tk.CENTER)
 

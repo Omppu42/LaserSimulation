@@ -10,20 +10,29 @@ from obstacles.square import SquareObstacle
 from obstacles.circle import CircleObstacle
 
 class Exporter():
+    ALLOWED_CHARS = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"," "]
+
     def __init__(self, screen, ray) -> None:
         self.screen = screen
         self.ray = ray
 
     def validate(self, P):
+        P = P.lower()
+
         if len(P) == 0:
             # empty Entry is ok
             return True
-        elif len(P) <= 20 and (P.isdigit() or P.isascii()):
-            # Entry with 1 digit is ok
+        
+        elif len(P) <= 20:
+            for char in P:
+                if not char in Exporter.ALLOWED_CHARS:
+                    return False
+            
+            # bellow limit and all chars are allowed
             return True
-        else:
-            # Anything else, reject it
-            return False
+        
+        # Anything else, reject it
+        return False
 
     def export_data(self) -> None:
         self.no_name_error_label = None
