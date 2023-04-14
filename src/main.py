@@ -1,5 +1,8 @@
 import cProfile, os, sys
 
+if os.path.basename(os.getcwd()) == "src":
+    os.chdir(os.path.abspath("../"))
+
 ver = sys.version_info
 if ver.major != 3  or ver.minor > 10:
     raise Exception("Please use Python 3.9 - 3.10. Python version 3.11 isn't supported")
