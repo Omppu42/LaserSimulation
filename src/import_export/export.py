@@ -5,9 +5,12 @@ pygame.init()
 
 from config.settings import settings
 from config.stats import stats
+
 from obstacles.obstacle_manager import obstacle_manager
 from obstacles.square import SquareObstacle
 from obstacles.circle import CircleObstacle
+
+import import_export.level_loader as level_loader
 
 class Exporter():
     ALLOWED_CHARS = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"," ", "_"]
@@ -121,7 +124,7 @@ class Exporter():
         with open(path + "/data.json", "w") as f:
             json.dump(json_obj, f, indent=2)
 
-        self.sidebar.importer.load_scene_no_gui(path)
+        level_loader.load_level(folder_name, self.ray, self.sidebar, self.screen)
 
 
     def take_screenshot(self, folder: str) -> None:

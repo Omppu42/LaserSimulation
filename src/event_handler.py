@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, json
 pygame.init()
 
 from gui.sidebar import Sidebar
@@ -40,5 +40,11 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
 def on_exit(sidebar) -> None:
     if stats.edited:
         UnsavedChangesDialog("You have unsaved changes.\n Save before exiting?", sidebar)
+
+    with open("src/config/last_session.json", "w") as f:
+        data = {}
+        data["last_save"] = stats.current_scene
+
+        json.dump(data, f, indent=2)
 
     sys.exit()

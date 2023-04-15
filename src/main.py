@@ -27,7 +27,8 @@ def main():
     from obstacles.obstacle_manager import obstacle_manager
     from event_handler import handle_events
 
-    #TODO: Open the scene that was open last time
+    import import_export.level_loader as level_loader
+
     #TODO: Delete saves from import window
 
     clock = pygame.time.Clock()
@@ -38,6 +39,9 @@ def main():
                       (settings.sidebar_width, settings.screen_height), ray, screen)
     
     ray.calculate_ray()
+
+    level_loader.load_on_start(ray)
+
 
     while True:
         screen.fill(settings.bg_color)

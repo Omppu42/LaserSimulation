@@ -1,4 +1,4 @@
-import pygame
+import pygame, os, json
 pygame.init()
 
 from obstacles.square import SquareObstacle
@@ -6,6 +6,7 @@ from obstacles.circle import CircleObstacle
 from obstacles.obstacle import ObstacleSuper
 
 from config.stats import stats
+from config.settings import settings
 
 class ObstacleManager():
     def __init__(self) -> None:

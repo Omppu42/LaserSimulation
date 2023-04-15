@@ -1,6 +1,5 @@
 import os, json
 import tkinter as tk
-from tkinter import ttk
 import pygame
 pygame.init()
 
@@ -9,66 +8,10 @@ from functools import partial
 from PIL import ImageTk, Image
 
 from config.settings import settings
-from config.stats import stats
-from obstacles.obstacle_manager import obstacle_manager
 
-class ScrollableFrame(tk.Frame):
-    def __init__(self, parent, *args, **kwargs):
-        tk.Frame.__init__(self, parent, *args, **kwargs)
+import import_export.level_loader as level_loader
 
-        # Create a canvas widget and add it to the frame
-        self.canvas = tk.Canvas(self, borderwidth=0, highlightthickness=0, width=500, height=500)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # Create a vertical scrollbar and attach it to the canvas
-        self.scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.canvas.yview)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y, expand=True)
-        self.canvas.config(yscrollcommand=self.scrollbar.set)
-
-        # Create a frame inside the canvas for the widgets to be placed on
-        self.inner_frame = tk.Frame(self.canvas)
-        self.inner_frame_id = self.canvas.create_window((0, 0), window=self.inner_frame, anchor=tk.NW)
-
-        # Bind events to update the scroll region when the inner frame size changes
-        self.inner_frame.bind("<Configure>", self.on_inner_frame_configure)
-        self.canvas.bind("<Configure>", self.on_canvas_configure)
-
-        # Bind the mousewheel event to the canvas
-        self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
-
-    def on_inner_frame_configure(self, event):
-        # Update the scroll region to match the size of the inner frame
-        self.inner_frame.update_idletasks()
-        self.canvas.config(scrollregion=self.canvas.bbox("all"))
-
-    def on_canvas_configure(self, event):
-        # Update the width of the inner frame to match the canvas width
-        canvas_width = event.width
-        self.canvas.itemconfig(self.inner_frame_id, width=canvas_width)
-
-    def on_mousewheel(self, event):
-        # Scroll the canvas up or down depending on the mousewheel direction
-        if event.delta < 0:
-            self.canvas.yview_scroll(1, "units")
-        elif event.delta > 0:
-            self.canvas.yview_scroll(-1, "units")
-
-    def add_frame(self, frame):
-        # Add a frame to the inner frame container
-        frame.pack(in_=self.inner_frame, pady=5, padx=5)
-
-    def delete_scrollable_frame(self):
-        self.canvas.unbind_all("<MouseWheel>")
-        self.pack_forget()
-
-        # Destroy all child widgets of the ScrollableFrame
-        for child_widget in self.winfo_children():
-            child_widget.destroy()
-
-        # Destroy the ScrollableFrame itself
-        self.destroy()
-
-
+from gui.scrollable_frame import ScrollableFrame
 
 class Importer():
     SELECTION_W = 500
@@ -86,7 +29,6 @@ class Importer():
         self.error_label = None
 
     def import_data(self) -> None:
-        
         self.selected_save = {}
         self.selected_save["index"] = -1
         self.selected_save["path"] = ""
@@ -106,21 +48,21 @@ class Importer():
         self.select_a_save_label = tk.Label(self.window, text="Select a save to load.", font=("Arial", 18))
         self.select_a_save_label.place(relx=0.5, rely=0.87, anchor=tk.CENTER)
 
-        self.cancel_button = tk.Button(text="Exit", command=self.cancel, font=22, width=15, height=2, bg="gray99")
+        self.cancel_button = tk.Button(text="Exit", command=self.__cancel, font=22, width=15, height=2, bg="gray99")
         self.cancel_button.place(relx=0.65, rely=0.95, anchor=tk.CENTER)
 
-        self.confirm_button = tk.Button(text="Load", command=self.confirm, font=22, width=15, height=2, bg="gray99")
+        self.confirm_button = tk.Button(text="Load", command=self.__confirm, font=22, width=15, height=2, bg="gray99")
         self.confirm_button.place(relx=0.35, rely=0.95, anchor=tk.CENTER)
 
         self.window.resizable(False, False)
-        self.get_folders_to_selection()
+        self.__get_folders_to_selection()
 
         self.window.mainloop()
 
-    def cancel(self) -> None:
+    def __cancel(self) -> None:
         self.window.destroy()
 
-    def confirm(self) -> None:
+    def __confirm(self) -> None:
         if self.selected_save["index"] == -1:
             self.select_a_save_label.destroy()
 
@@ -131,34 +73,14 @@ class Importer():
         if self.error_label:
             self.error_label.destroy()
 
-        self.load_scene_no_gui(self.selected_save["path"])
-
         name = os.path.basename(self.selected_save["path"])
+
+        level_loader.load_level(name, self.ray, self.sidebar, self.screen)
+
         self.select_a_save_label.config(text=f"Loaded: {name}")
 
 
-    def load_scene_no_gui(self, path: str) -> None:
-        if not os.path.exists(path):
-            print(path, "doesn't exits")
-            return
-        
-        stats.edited = False
-
-        with open(path + "/data.json", "r") as f:
-            data = json.load(f)
-        
-        self.ray.load_from_json(data)
-        obstacle_manager.load_from_json(data)
-        
-        name = os.path.basename(path)
-        stats.current_scene = name
-
-        self.ray.draw_ray(self.screen)
-        self.sidebar.draw(self.screen)
-        obstacle_manager.draw_obstacles(self.screen)
-        pygame.display.update()
-
-    def get_folders_to_selection(self) -> None:
+    def __get_folders_to_selection(self) -> None:
         dirs = os.listdir(settings.export_dir)
         dirs = [settings.export_dir + _dir for _dir in dirs]
 
@@ -210,7 +132,7 @@ class Importer():
         frame = tk.Frame(master=self.selection_frame.inner_frame, bg=Importer.FRAME_BG, width=Importer.SELECTION_W, height=int(Importer.SELECTION_H / 3))
         
         # Select button
-        button = tk.Button(master=frame, text="Select", command=partial(self._select_btn, _dir, _index), width=30, height=4, bg=Importer.BTN_UNSELECTED_COLOR)
+        button = tk.Button(master=frame, text="Select", command=partial(self.__select_btn, _dir, _index), width=30, height=4, bg=Importer.BTN_UNSELECTED_COLOR)
         button.place(relx=0.65, rely=0.6, anchor=tk.CENTER)
         self.selection_buttons.append(button)
 
@@ -230,8 +152,9 @@ class Importer():
 
         # Add the result to the scrollable frame
         self.selection_frame.add_frame(frame)
-
-    def _select_btn(self, path_to_folder: str, selection_btn_index: int) -> None:
+        
+        
+    def __select_btn(self, path_to_folder: str, selection_btn_index: int) -> None:
         self.selected_save["index"] = selection_btn_index
         self.selected_save["path"] = path_to_folder
 
