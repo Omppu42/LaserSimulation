@@ -2,6 +2,8 @@ import pygame, sys
 pygame.init()
 
 from gui.sidebar import Sidebar
+from gui.unsaved_changes import UnsavedChangesDialog
+
 from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
 from ray import Ray
@@ -16,7 +18,7 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
         ray.handle_event(event)
 
         if event.type == pygame.QUIT:
-            sys.exit()
+            on_exit(sidebar)
 
         if event.type == pygame.KEYDOWN:
             sidebar.handle_key_pressed(event)
@@ -33,3 +35,10 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
         if event.type == pygame.MOUSEMOTION:
             sidebar.check_mouse_motion()
             obstacle_manager.mouse_motion()
+
+
+def on_exit(sidebar) -> None:
+    if stats.edited:
+        UnsavedChangesDialog("You have unsaved changes.\n Save before exiting?", sidebar)
+
+    sys.exit()

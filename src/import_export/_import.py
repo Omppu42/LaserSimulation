@@ -107,10 +107,10 @@ class Importer():
         self.select_a_save_label.place(relx=0.5, rely=0.87, anchor=tk.CENTER)
 
         self.cancel_button = tk.Button(text="Exit", command=self.cancel, font=22, width=15, height=2, bg="gray99")
-        self.cancel_button.place(relx=0.35, rely=0.95, anchor=tk.CENTER)
+        self.cancel_button.place(relx=0.65, rely=0.95, anchor=tk.CENTER)
 
         self.confirm_button = tk.Button(text="Load", command=self.confirm, font=22, width=15, height=2, bg="gray99")
-        self.confirm_button.place(relx=0.65, rely=0.95, anchor=tk.CENTER)
+        self.confirm_button.place(relx=0.35, rely=0.95, anchor=tk.CENTER)
 
         self.window.resizable(False, False)
         self.get_folders_to_selection()

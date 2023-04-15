@@ -28,6 +28,7 @@ def main():
     from event_handler import handle_events
 
     #TODO: Open the scene that was open last time
+    #TODO: Delete saves from import window
 
     clock = pygame.time.Clock()
 

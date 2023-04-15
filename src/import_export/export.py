@@ -35,7 +35,7 @@ class Exporter():
         # Anything else, reject it
         return False
 
-    def export_data(self) -> None:
+    def export_data(self, no_button_text="Cancel") -> None:
         self.no_name_error_label = None
 
         self.window = tk.Tk()
@@ -51,11 +51,11 @@ class Exporter():
         self.name_entry = tk.Entry(width=20, font=18, validate="key", validatecommand=vcmd)
         self.name_entry.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
-        self.cancel_button = tk.Button(text="Cancel", command=self.cancel)
-        self.cancel_button.place(relx=0.4, rely=0.85, anchor=tk.CENTER)
+        self.cancel_button = tk.Button(text=no_button_text, command=self.cancel)
+        self.cancel_button.place(relx=0.6, rely=0.85, anchor=tk.CENTER)
 
         self.export_button = tk.Button(text="Export", command=self.confirm)
-        self.export_button.place(relx=0.6, rely=0.85, anchor=tk.CENTER)
+        self.export_button.place(relx=0.4, rely=0.85, anchor=tk.CENTER)
 
         self.window.resizable(False, False)
 
