@@ -10,7 +10,7 @@ from obstacles.square import SquareObstacle
 from obstacles.circle import CircleObstacle
 
 class Exporter():
-    ALLOWED_CHARS = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"," "]
+    ALLOWED_CHARS = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"," ", "_"]
 
     def __init__(self, screen, ray) -> None:
         self.screen = screen
@@ -74,12 +74,6 @@ class Exporter():
             # Stop here if no name provided
             return
         
-        i = 0
-        org_name = name
-        while os.path.exists(os.path.join(settings.export_dir, name)):
-            i += 1
-            name = org_name + f" ({i})"
-        
         self.export_into_folder(name)
 
 
@@ -104,7 +98,8 @@ class Exporter():
         saved_as = tk.Label(text=f"Saved into {path}", font=22)
         saved_as.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
 
-        os.mkdir(path)
+        if not os.path.exists(path):
+            os.mkdir(path)
 
         self.take_screenshot(path)
         json_obj = self.create_json_output()

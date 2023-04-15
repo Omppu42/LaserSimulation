@@ -4,6 +4,7 @@ from tkinter import ttk
 import pygame
 pygame.init()
 
+from datetime import datetime
 from functools import partial
 from PIL import ImageTk, Image
 
@@ -149,6 +150,7 @@ class Importer():
         dirs = os.listdir(settings.export_dir)
         dirs = [settings.export_dir + _dir for _dir in dirs]
 
+        # If no saves exist
         if dirs == []:
             tk.Label(self.window, text="You don't have any saves.", font=("Arial", 18)).place(relx=0.5, rely=0.5, anchor=tk.CENTER)
             tk.Label(self.window, text="Export something first.", font=("Arial", 16)).place(relx=0.5, rely=0.55, anchor=tk.CENTER)
@@ -159,35 +161,63 @@ class Importer():
             return
 
         self.selection_buttons = []
+        sorted_dirs = []
 
-        if len(dirs) < 3:
-            self.selection_frame.canvas.config(height=len(dirs) * 176)
-
-        for _index, _dir in enumerate(dirs):
+        # Sort by time saved
+        for _dir in dirs:
             with open(_dir + "/data.json", "r") as f:
                 data = json.load(f)
 
-            name = os.path.basename(_dir)
             saved = data["saved_time"]
+            diff = datetime.now() - datetime.strptime(saved, "%d/%m/%Y %H:%M")
+            minutes = diff.total_seconds() / 60
             
-            frame = tk.Frame(master=self.selection_frame.inner_frame, bg=Importer.FRAME_BG, width=Importer.SELECTION_W, height=int(Importer.SELECTION_H / 3))
-            button = tk.Button(master=frame, text="Select", command=partial(self._select_btn, _dir, _index), width=30, height=4, bg=Importer.BTN_UNSELECTED_COLOR)
-            button.place(relx=0.65, rely=0.6, anchor=tk.CENTER)
+            sorted_dirs.append( (_dir, minutes) )
 
-            self.selection_buttons.append(button)
-    
-            tk.Label(master=frame, text=f"Name: {name}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.1, anchor=tk.CENTER)
-            tk.Label(master=frame, text=f"Saved: {saved}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.25, anchor=tk.CENTER)
+        # sort by the difference to current time: Most recently exported will be on top
+        sorted_dirs.sort(key=lambda x: x[1])
 
-            image = Image.open(_dir+"/preview.png")
-            image = image.resize((150, 150), Image.ANTIALIAS)
-            photo_image = ImageTk.PhotoImage(image)
+        # if less than 3 saves, adjust the scrollable frame height to not allow scrolling
+        if len(sorted_dirs) < 3:
+            self.selection_frame.canvas.config(height=len(sorted_dirs) * 176)
 
-            label_img = tk.Label(master=frame, image=photo_image)
-            label_img.place(relx=0.17, rely=0.5, anchor=tk.CENTER)
-            label_img.image = photo_image
+        # Create selection frames
+        for _index, _data in enumerate(sorted_dirs):
+            self.__create_selectable(_index, _data[0])
 
-            self.selection_frame.add_frame(frame)
+
+    def __create_selectable(self, _index, _dir) -> None:
+        # Read data
+        with open(_dir + "/data.json", "r") as f:
+            data = json.load(f)
+
+        name = os.path.basename(_dir)
+        saved = data["saved_time"]
+        
+        # Frame
+        frame = tk.Frame(master=self.selection_frame.inner_frame, bg=Importer.FRAME_BG, width=Importer.SELECTION_W, height=int(Importer.SELECTION_H / 3))
+        
+        # Select button
+        button = tk.Button(master=frame, text="Select", command=partial(self._select_btn, _dir, _index), width=30, height=4, bg=Importer.BTN_UNSELECTED_COLOR)
+        button.place(relx=0.65, rely=0.6, anchor=tk.CENTER)
+        self.selection_buttons.append(button)
+
+        # Name and Saved time
+        tk.Label(master=frame, text=f"Name: {name}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.1, anchor=tk.CENTER)
+        tk.Label(master=frame, text=f"Saved: {saved}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.25, anchor=tk.CENTER)
+
+        # Load preview image
+        image = Image.open(_dir+"/preview.png")
+        image = image.resize((150, 150), Image.ANTIALIAS)
+        photo_image = ImageTk.PhotoImage(image)
+
+        # Display preview image
+        label_img = tk.Label(master=frame, image=photo_image)
+        label_img.place(relx=0.17, rely=0.5, anchor=tk.CENTER)
+        label_img.image = photo_image
+
+        # Add the result to the scrollable frame
+        self.selection_frame.add_frame(frame)
 
     def _select_btn(self, path_to_folder: str, selection_btn_index: int) -> None:
         self.selected_save["index"] = selection_btn_index

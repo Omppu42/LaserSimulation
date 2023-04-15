@@ -27,7 +27,7 @@ def main():
     from obstacles.obstacle_manager import obstacle_manager
     from event_handler import handle_events
 
-    #TODO: add to pygame window 'currently loaded' and the save name
+    #TODO: Ctrl + S to save
 
     clock = pygame.time.Clock()
 
