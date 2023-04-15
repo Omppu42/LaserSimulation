@@ -2,7 +2,7 @@ import pygame, sys, json
 pygame.init()
 
 from gui.sidebar import Sidebar
-from gui.unsaved_changes import UnsavedChangesDialog
+from gui.tkinter.unsaved_changes import UnsavedChangesDialog
 
 from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats

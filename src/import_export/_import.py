@@ -11,7 +11,7 @@ from config.settings import settings
 
 import import_export.level_loader as level_loader
 
-from gui.scrollable_frame import ScrollableFrame
+from gui.tkinter.scrollable_frame import ScrollableFrame
 
 class Importer():
     SELECTION_W = 500
