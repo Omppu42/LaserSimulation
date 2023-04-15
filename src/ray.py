@@ -73,6 +73,7 @@ class Ray():
                 stats.ray_selected = True
 
         if event.type == pygame.MOUSEMOTION and stats.ray_selected:
+            stats.edited = True
             diff = pygame.mouse.get_rel()
             self.x += diff[0]
             self.y += diff[1]
@@ -86,10 +87,12 @@ class Ray():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
+            stats.edited = True
             self.dir_deg -= Ray.ROTATION_SPEED
             self.update_start_surface()
 
         if keys[pygame.K_RIGHT]:  
+            stats.edited = True
             self.dir_deg += Ray.ROTATION_SPEED
             self.update_start_surface()
 

@@ -12,7 +12,8 @@ from obstacles.circle import CircleObstacle
 class Exporter():
     ALLOWED_CHARS = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"," ", "_"]
 
-    def __init__(self, screen, ray) -> None:
+    def __init__(self, sidebar, screen, ray) -> None:
+        self.sidebar = sidebar
         self.screen = screen
         self.ray = ray
 
@@ -91,12 +92,25 @@ class Exporter():
         if self.no_name_error_label:
             self.no_name_error_label.destroy()
 
-
         exporting = tk.Label(text="Exporting...", font=22, fg="green3")
         exporting.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
 
         saved_as = tk.Label(text=f"Saved into {path}", font=22)
         saved_as.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
+        
+        self.export_no_gui(folder_name)
+
+        self.window.update()
+
+        exporting.destroy()
+
+        tk.Label(text="Done exporting!", font=22, fg="green3").place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+        tk.Button(text="Done", command=self.cancel).place(relx=0.5, rely=0.85, anchor=tk.CENTER)
+
+
+    def export_no_gui(self, folder_name: str) -> None:
+        stats.edited = False
+        path = os.path.join(settings.export_dir, folder_name)
 
         if not os.path.exists(path):
             os.mkdir(path)
@@ -107,12 +121,7 @@ class Exporter():
         with open(path + "/data.json", "w") as f:
             json.dump(json_obj, f, indent=2)
 
-        self.window.update()
-
-        exporting.destroy()
-
-        tk.Label(text="Done exporting!", font=22, fg="green3").place(relx=0.5, rely=0.4, anchor=tk.CENTER)
-        tk.Button(text="Done", command=self.cancel).place(relx=0.5, rely=0.85, anchor=tk.CENTER)
+        self.sidebar.importer.load_scene_no_gui(path)
 
 
     def take_screenshot(self, folder: str) -> None:

@@ -57,6 +57,7 @@ class ObstacleManager():
         if self.selected_index == -1: return
 
         if event.key == pygame.K_x:
+            stats.edited = True
             self.__all_obstacles.pop(self.selected_index)
             self.selected_index = -1
 
@@ -68,9 +69,9 @@ class ObstacleManager():
         obs = self.__all_obstacles[self.selected_index]
         
         #Scale
-        if keys[pygame.K_UP]:    
+        if keys[pygame.K_UP]: 
             obs.scale_self(1)
-        if keys[pygame.K_DOWN]:    
+        if keys[pygame.K_DOWN]:
             obs.scale_self(-1)
 
         #Rotate

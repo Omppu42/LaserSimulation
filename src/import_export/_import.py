@@ -83,6 +83,8 @@ class Importer():
         self.screen = screen
         self.ray = ray
 
+        self.error_label = None
+
     def import_data(self) -> None:
         
         self.selected_save = {}
@@ -126,25 +128,35 @@ class Importer():
             self.error_label.place(relx=0.5, rely=0.87, anchor=tk.CENTER)
             return
 
-        # Successful
         if self.error_label:
             self.error_label.destroy()
 
-        with open(self.selected_save["path"] + "/data.json", "r") as f:
+        self.load_scene_no_gui(self.selected_save["path"])
+
+        name = os.path.basename(self.selected_save["path"])
+        self.select_a_save_label.config(text=f"Loaded: {name}")
+
+
+    def load_scene_no_gui(self, path: str) -> None:
+        if not os.path.exists(path):
+            print(path, "doesn't exits")
+            return
+        
+        stats.edited = False
+
+        with open(path + "/data.json", "r") as f:
             data = json.load(f)
         
         self.ray.load_from_json(data)
         obstacle_manager.load_from_json(data)
         
-        name = os.path.basename(self.selected_save["path"])
+        name = os.path.basename(path)
         stats.current_scene = name
-        self.select_a_save_label.config(text=f"Loaded: {name}")
 
         self.ray.draw_ray(self.screen)
         self.sidebar.draw(self.screen)
         obstacle_manager.draw_obstacles(self.screen)
         pygame.display.update()
-
 
     def get_folders_to_selection(self) -> None:
         dirs = os.listdir(settings.export_dir)

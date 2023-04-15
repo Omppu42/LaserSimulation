@@ -29,6 +29,9 @@ class SelectedState(Enum):
     RUNNING = 3
 
 class Sidebar():
+    CTRL_MODIFIER_VALUE = 4160
+    CAPSLOCK_CTRL_MODIFIER_VALUE = 12352
+
     def __init__(self, pos: tuple, size: tuple, ray: Ray, screen) -> None:
         self.x, self.y = pos
         self.w, self.h = size
@@ -49,7 +52,7 @@ class Sidebar():
         self.import_button = ImageButton((self.x + 210, 20), (48, 48), "assets/import.png", border=2)
 
         self.selected_state = SelectedState(SelectedState.NO_OBSTACLE)
-        self.exporter = Exporter(screen, self.ray_ref)
+        self.exporter = Exporter(self, screen, self.ray_ref)
         self.importer = Importer(self, screen, self.ray_ref)
 
         self.__init_keys()
@@ -74,7 +77,8 @@ class Sidebar():
 
         self.UPDATES_PER_FRAME_KEY = "updates_per_frame"
         self.TOTAL_OBSTACLES_KEY = "total_obsts"
-        self.CURRENT_SCENE = "current_scene"
+        self.CURRENT_SCENE_KEY = "current_scene"
+        self.EDITED_KEY = "edited_bool"
 
 
     def __update_texts_data(self) -> None:
@@ -94,7 +98,8 @@ class Sidebar():
 
         stats.sidebar_texts_data[self.UPDATES_PER_FRAME_KEY] = settings.ray_updates_per_frame
         stats.sidebar_texts_data[self.TOTAL_OBSTACLES_KEY] = stats.total_obstacles
-        stats.sidebar_texts_data[self.CURRENT_SCENE] = stats.current_scene
+        stats.sidebar_texts_data[self.CURRENT_SCENE_KEY] = stats.current_scene
+        stats.sidebar_texts_data[self.EDITED_KEY] = "Edited" if stats.edited else ""
 
 
     def __init_inputfields(self) -> None:
@@ -120,7 +125,8 @@ class Sidebar():
         # display these when NO obstacle is selected
         self.no_obstacle_selected_texts = TextManager( [TextObject("Select an obstacle to Modify it", self.__get_pos_in_center(self.h - 110), font)] )
 
-        self.not_running_texts = TextManager( [TextObject("Scene: %s", self.__get_pos_in_center(110), font, placeholder_key=self.CURRENT_SCENE)] )
+        self.not_running_texts = TextManager( [TextObject("Scene: %s", self.__get_pos_in_center(110), font, placeholder_key=self.CURRENT_SCENE_KEY),
+                                               TextObject("%s", self.__get_pos_in_center(130), font, placeholder_key=self.EDITED_KEY)] )
 
         # display when simulation running
         self.running_texts = TextManager( [TextObject("FPS %d", self.__get_pos_in_center(30), font, placeholder_key=self.FPS_KEY),
@@ -249,8 +255,18 @@ class Sidebar():
 
 
 
-    def handle_key_pressed(self, event) -> None:
+    def handle_key_pressed(self, event: pygame.event) -> None:
         self.inputfields.on_keydown(event)
+
+        if event.mod == Sidebar.CTRL_MODIFIER_VALUE or event.mod == Sidebar.CAPSLOCK_CTRL_MODIFIER_VALUE:
+            if event.key == pygame.K_s:
+                # ctrl + s
+                if stats.current_scene == "Default":
+                    # In default
+                    self.exporter.export_data()
+                else:
+                    # Save already opened
+                    self.exporter.export_no_gui(stats.current_scene)
 
 
     def on_simulation_start(self) -> None:

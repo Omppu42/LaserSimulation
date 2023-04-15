@@ -27,7 +27,7 @@ def main():
     from obstacles.obstacle_manager import obstacle_manager
     from event_handler import handle_events
 
-    #TODO: Ctrl + S to save
+    #TODO: Open the scene that was open last time
 
     clock = pygame.time.Clock()
 

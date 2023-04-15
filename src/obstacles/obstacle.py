@@ -1,6 +1,8 @@
 import pygame
 pygame.init()
 
+from config.stats import stats
+
 class ObstacleSuper():
     def __init__(self, position: tuple, radius: int, rotation_deg: int):
         self.x, self.y = position
@@ -16,12 +18,14 @@ class ObstacleSuper():
         # min and max sidelength
         if self.radius + change < 5 or self.radius + change > 200: return
 
+        stats.edited = True
         self.radius += change
         self.update_drawing()
 
 
     def rotate_self(self, change_deg) -> None:
         """Rotate by certain amount of degrees"""
+        stats.edited = True
         self.rotation_deg += change_deg
         self.update_drawing()
 
@@ -40,6 +44,8 @@ class ObstacleSuper():
 
     def move_by(self, amount: tuple) -> None:
         """Move the obstacle in a direction"""
+        stats.edited = True
+        
         self.x += amount[0]
         self.y += amount[1]
 
