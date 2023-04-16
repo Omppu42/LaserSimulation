@@ -19,13 +19,26 @@ You can install python here:
 https://www.python.org/downloads/
 
 ### Packages
-To install all packages that are required, first navigate to the projects main folder, and run: <br>
-```pip install -r requirements.txt```
+To install all packages that are required, first navigate to:
+```bash
+cd LaserSimulation
+```
+
+Run: <br>
+```bash
+pip install -r requirements.txt
+```
 
 # How to Run
-After getting all the requirements sorted out, you can run the project. <br>
-Navigate to ```LaserSimulation/src```.
-<br> There, run: ```python3 main.py```
+After getting all the requirements sorted out, you can run the project. <br> <br>
+Navigate to: 
+```bash
+cd LaserSimulation/src
+```
+Once there, run:
+```bash
+python3 main.py
+```
 
 
 # Images
