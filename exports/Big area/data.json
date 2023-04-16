@@ -1,0 +1,99 @@
+{
+  "saved_time": "16/04/2023 14:11",
+  "ray": {
+    "position": {
+      "x": 424,
+      "y": 389
+    },
+    "rotation": 290
+  },
+  "squares": [
+    {
+      "position": {
+        "x": 3000,
+        "y": 3000
+      },
+      "rotation": 0,
+      "scale": 10
+    },
+    {
+      "position": {
+        "x": 500,
+        "y": 480
+      },
+      "rotation": 20,
+      "scale": 40
+    },
+    {
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "rotation": 85,
+      "scale": 50
+    },
+    {
+      "position": {
+        "x": 268,
+        "y": 305
+      },
+      "rotation": 22,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 600,
+        "y": 150
+      },
+      "rotation": 60,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 250,
+        "y": 525
+      },
+      "rotation": 82,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 475,
+        "y": 675
+      },
+      "rotation": 70,
+      "scale": 100
+    },
+    {
+      "position": {
+        "x": 600,
+        "y": 480
+      },
+      "rotation": 70,
+      "scale": 100
+    }
+  ],
+  "circles": [
+    {
+      "position": {
+        "x": 600,
+        "y": 360
+      },
+      "scale": 20
+    },
+    {
+      "position": {
+        "x": 440,
+        "y": 250
+      },
+      "scale": 46
+    },
+    {
+      "position": {
+        "x": 450,
+        "y": 180
+      },
+      "scale": 50
+    }
+  ]
+}
