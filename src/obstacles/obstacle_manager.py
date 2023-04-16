@@ -10,7 +10,7 @@ from config.settings import settings
 
 class ObstacleManager():
     def __init__(self) -> None:
-        self.__obstacles_square = [ SquareObstacle((3000, 3000), 10, 0)]
+        self.__obstacles_square = [ SquareObstacle((20000, 30000), 10, 0)]
 
         self.__obstacles_circle = []
         

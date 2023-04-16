@@ -9,8 +9,8 @@
   "squares": [
     {
       "position": {
-        "x": 3000,
-        "y": 3000
+        "x": 20000,
+        "y": 30000
       },
       "rotation": 0,
       "scale": 10

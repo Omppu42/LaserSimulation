@@ -10,6 +10,14 @@
   "squares": [
     {
       "position": {
+        "x": 3000,
+        "y": 3000
+      },
+      "rotation": 0,
+      "scale": 10
+    },
+    {
+      "position": {
         "x": 397,
         "y": 326
       },

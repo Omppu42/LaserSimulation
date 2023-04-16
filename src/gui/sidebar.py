@@ -272,7 +272,7 @@ class Sidebar():
 
     def on_simulation_start(self) -> None:
         stats.simulation_running = True
-        stats.total_obstacles = len(obstacle_manager.get_obstacles())
+        stats.total_obstacles = len(obstacle_manager.get_obstacles()) - 1
 
         settings.max_fps =                  self.inputfields.get_inputfield_at_index(self.CONFIG_FPS_INDEX).return_val()
         settings.ray_updates_per_frame =    self.inputfields.get_inputfield_at_index(self.CONFIG_UPDATES_FRAME_INDEX).return_val()
