@@ -1,5 +1,6 @@
 # Laser Simulation
-<img src="https://img.shields.io/github/issues/Omppu42/LaserSimulation">
+<img src="https://img.shields.io/github/stars/Omppu42/LaserSimulation?color=yellow&style=for-the-badge"> <img src="https://img.shields.io/github/forks/Omppu42/LaserSimulation?style=for-the-badge"> <img src="https://img.shields.io/github/issues/Omppu42/LaserSimulation?style=for-the-badge"> <img src="https://img.shields.io/github/manifest-json/v/Omppu42/LaserSimulation?style=for-the-badge"> <br> <br>
+
 <b>Laser simulation</b> is a simulator made by <i>Omppu42</i> <br>
 Made using <i>Python, Pygame and tkinter</i> <br>
 
@@ -9,7 +10,7 @@ Made using <i>Python, Pygame and tkinter</i> <br>
 - *Save and load* -system to keep track of different scenes 
 
 # Requirements
-**Python 3.9 - 3.10 is required.**<br>
+![Requires Python 3.9](https://img.shields.io/badge/Python-v3.9-blue?style=for-the-badge) <br>
 NOTE: Python 3.11 is NOT supported <br> <br>
 You can install python here:
 https://www.python.org/downloads/
