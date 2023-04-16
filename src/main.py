@@ -29,6 +29,10 @@ def main():
 
     import import_export.level_loader as level_loader
 
+    if settings.profile:
+        profiler = cProfile.Profile()
+        profiler.enable()
+
     clock = pygame.time.Clock()
 
     ray = Ray((400, 400), (settings.screen_width - settings.sidebar_width, settings.screen_height), 270)
@@ -52,7 +56,7 @@ def main():
         sidebar.draw(screen)
 
         # Pygame Events
-        handle_events(sidebar, ray, clock)
+        handle_events(sidebar, ray, clock, profiler)
 
         pygame.display.update()
 
@@ -65,15 +69,4 @@ def main():
 
 
 if __name__ == "__main__":
-    from config.settings import settings
-
-    if settings.profile:
-        pr = cProfile.Profile()
-        pr.enable()
-
-        main()
-
-        pr.disable()
-        pr.print_stats()
-    else:
-        main()
+    main()

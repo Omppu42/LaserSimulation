@@ -1,6 +1,5 @@
 import math
 import pygame
-import numpy as np
 
 from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
@@ -136,7 +135,7 @@ class Ray():
     def calculate_bounce_angle(self, normal: tuple) -> None:
         normalized_move = (self.move_vec[0] / settings.ray_step_size, self.move_vec[1] / settings.ray_step_size)
 
-        dot = 2 * np.dot(normalized_move, normal)
+        dot = 2 * (normalized_move[0] * normal[0] + normalized_move[1] * normal[1])
         self.move_vec = ((normalized_move[0] - dot * normal[0]) * settings.ray_step_size,
                             (normalized_move[1] - dot * normal[1]) * settings.ray_step_size)
         

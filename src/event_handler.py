@@ -9,7 +9,7 @@ from config.stats import stats
 from ray import Ray
 
 
-def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
+def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock, profiler) -> None:
     stats.fps = round(clock.get_fps())
     obstacle_manager.check_keys_held()
     ray.check_keys()
@@ -18,7 +18,7 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
         ray.handle_event(event)
 
         if event.type == pygame.QUIT:
-            on_exit(sidebar)
+            on_exit(sidebar, profiler)
 
         if event.type == pygame.KEYDOWN:
             sidebar.handle_key_pressed(event)
@@ -37,7 +37,7 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock) -> None:
             obstacle_manager.mouse_motion()
 
 
-def on_exit(sidebar) -> None:
+def on_exit(sidebar, profiler) -> None:
     if stats.edited:
         UnsavedChangesDialog("You have unsaved changes.\n Save before exiting?", sidebar)
 
@@ -47,4 +47,6 @@ def on_exit(sidebar) -> None:
 
         json.dump(data, f, indent=2)
 
+    profiler.disable()
+    profiler.print_stats()
     sys.exit()
