@@ -238,6 +238,7 @@ class Sidebar():
         self.inputfields.check_click()
 
         if self.import_button.check_click():
+            self.exporter.make_empty()
             self.importer.import_data()
 
         if self.export_button.check_click():
@@ -261,7 +262,7 @@ class Sidebar():
         if event.mod == Sidebar.CTRL_MODIFIER_VALUE or event.mod == Sidebar.CAPSLOCK_CTRL_MODIFIER_VALUE:
             if event.key == pygame.K_s:
                 # ctrl + s
-                if stats.current_scene == "Default":
+                if stats.current_scene == "Empty":
                     # In default
                     self.exporter.export_data()
                 else:

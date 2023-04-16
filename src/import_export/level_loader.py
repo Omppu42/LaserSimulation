@@ -20,8 +20,10 @@ def load_on_start(ray):
 
     # check if the path is valid
     if not os.path.exists(data_path):
-        print(data_path, "not found")
-        return
+        empty_dir = settings.export_dir + "Empty" + "/data.json"
+        if os.path.exists(empty_dir):
+            data_path = empty_dir
+        else: return
 
     # read the last save's data
     with open(data_path, "r") as f:
@@ -31,7 +33,10 @@ def load_on_start(ray):
     ray.load_from_json(scene_data)
     obstacle_manager.load_from_json(scene_data)
     
-    stats.current_scene = data["last_save"]
+    name = os.path.dirname(data_path)
+    name = os.path.basename(name)
+
+    stats.current_scene = name
 
 
 def load_level(level_name: str, ray, sidebar, screen: pygame.Surface):

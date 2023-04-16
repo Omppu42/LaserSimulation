@@ -27,7 +27,7 @@ class UnsavedChangesDialog:
     def save_changes(self):
         self.top.destroy()
 
-        if stats.current_scene == "Default":
+        if stats.current_scene == "Empty":
             self.sidebar.exporter.export_data(no_button_text="Don't Save")
         else:
             self.sidebar.exporter.export_no_gui(stats.current_scene)

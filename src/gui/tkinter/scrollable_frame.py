@@ -25,6 +25,8 @@ class ScrollableFrame(tk.Frame):
         # Bind the mousewheel event to the canvas
         self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
 
+        self.frames = []
+
     def on_inner_frame_configure(self, event):
         # Update the scroll region to match the size of the inner frame
         self.inner_frame.update_idletasks()
@@ -44,7 +46,11 @@ class ScrollableFrame(tk.Frame):
 
     def add_frame(self, frame):
         # Add a frame to the inner frame container
+        self.frames.append(frame)
         frame.pack(in_=self.inner_frame, pady=5, padx=5)
+
+    def delete_frame(self, index):
+        self.frames[index].destroy()
 
     def delete_scrollable_frame(self):
         self.canvas.unbind_all("<MouseWheel>")

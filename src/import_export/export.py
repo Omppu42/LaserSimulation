@@ -20,6 +20,12 @@ class Exporter():
         self.screen = screen
         self.ray = ray
 
+    
+    def make_empty(self) -> None:
+        if os.path.exists(settings.export_dir + "Empty"): return
+        self.export_no_gui("Empty", with_time=False)
+
+
     def validate(self, P):
         P = P.lower()
 
@@ -78,6 +84,11 @@ class Exporter():
             # Stop here if no name provided
             return
         
+        if name.lower() == "empty":
+            self.no_name_error_label = tk.Label(text="Can't name a save 'Empty'", font=22, fg="red")
+            self.no_name_error_label.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+            return
+        
         self.export_into_folder(name)
 
 
@@ -111,7 +122,7 @@ class Exporter():
         tk.Button(text="Done", command=self.cancel).place(relx=0.5, rely=0.85, anchor=tk.CENTER)
 
 
-    def export_no_gui(self, folder_name: str) -> None:
+    def export_no_gui(self, folder_name: str, with_time=True) -> None:
         stats.edited = False
         path = os.path.join(settings.export_dir, folder_name)
 
@@ -119,7 +130,7 @@ class Exporter():
             os.mkdir(path)
 
         self.take_screenshot(path)
-        json_obj = self.create_json_output()
+        json_obj = self.create_json_output(include_time=with_time)
 
         with open(path + "/data.json", "w") as f:
             json.dump(json_obj, f, indent=2)
@@ -133,10 +144,11 @@ class Exporter():
         pygame.image.save(ss_sub, folder + "/preview.png")
 
 
-    def create_json_output(self) -> list:
+    def create_json_output(self, include_time=True) -> list:
         output = {}
 
-        output["saved_time"] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        if include_time:
+            output["saved_time"] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         output["ray"] = self.ray.make_json_object()
 
         square_data = []

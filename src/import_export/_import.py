@@ -1,5 +1,7 @@
 import os, json
 import tkinter as tk
+from tkinter.messagebox import askyesno
+
 import pygame
 pygame.init()
 
@@ -7,6 +9,7 @@ from datetime import datetime
 from functools import partial
 from PIL import ImageTk, Image
 
+from config.stats import stats
 from config.settings import settings
 
 import import_export.level_loader as level_loader
@@ -96,11 +99,17 @@ class Importer():
 
         self.selection_buttons = []
         sorted_dirs = []
+        empty = []
 
         # Sort by time saved
         for _dir in dirs:
             with open(_dir + "/data.json", "r") as f:
                 data = json.load(f)
+
+            # if not saved_time in data
+            if not "saved_time" in data.keys():
+                empty.append( (_dir, -1) )
+                continue
 
             saved = data["saved_time"]
             diff = datetime.now() - datetime.strptime(saved, "%d/%m/%Y %H:%M")
@@ -108,8 +117,12 @@ class Importer():
             
             sorted_dirs.append( (_dir, minutes) )
 
+
         # sort by the difference to current time: Most recently exported will be on top
         sorted_dirs.sort(key=lambda x: x[1])
+        if empty:
+            for e in empty:
+                sorted_dirs.append(e)
 
         # if less than 3 saves, adjust the scrollable frame height to not allow scrolling
         if len(sorted_dirs) < 3:
@@ -117,16 +130,21 @@ class Importer():
 
         # Create selection frames
         for _index, _data in enumerate(sorted_dirs):
-            self.__create_selectable(_index, _data[0])
+            self.__create_selectable(_index, _data)
 
 
-    def __create_selectable(self, _index, _dir) -> None:
+    def __create_selectable(self, _index, _data) -> None:
+        _dir, _time = _data
+
         # Read data
         with open(_dir + "/data.json", "r") as f:
             data = json.load(f)
 
+        if "hide" in data.keys():
+            if data["hide"] == True:
+                return
+            
         name = os.path.basename(_dir)
-        saved = data["saved_time"]
         
         # Frame
         frame = tk.Frame(master=self.selection_frame.inner_frame, bg=Importer.FRAME_BG, width=Importer.SELECTION_W, height=int(Importer.SELECTION_H / 3))
@@ -136,9 +154,16 @@ class Importer():
         button.place(relx=0.65, rely=0.6, anchor=tk.CENTER)
         self.selection_buttons.append(button)
 
+        if not _time == -1:
+            saved = data["saved_time"]
+            tk.Label(master=frame, text=f"Saved: {saved}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.25, anchor=tk.CENTER)
+
+            button_del = tk.Button(master=frame, text="X", command=partial(self.__delete_selectable, _dir, _index), width=2, height=1, bg=Importer.BTN_UNSELECTED_COLOR)
+            button_del.place(relx=0.95, rely=0.6, anchor=tk.CENTER)
+
         # Name and Saved time
         tk.Label(master=frame, text=f"Name: {name}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.1, anchor=tk.CENTER)
-        tk.Label(master=frame, text=f"Saved: {saved}", bg=Importer.FRAME_BG, font=("Arial", 12)).place(relx=0.65, rely=0.25, anchor=tk.CENTER)
+
 
         # Load preview image
         image = Image.open(_dir+"/preview.png")
@@ -153,6 +178,26 @@ class Importer():
         # Add the result to the scrollable frame
         self.selection_frame.add_frame(frame)
         
+
+    def __delete_selectable(self, path: str, index: int) -> None:
+        name = os.path.basename(path)
+
+        if not askyesno("Confirm", f"Are you sure you want to delete '{name}'?\nThis action cannot be undone."): return
+        
+        self.selection_frame.delete_frame(index)
+
+        os.remove(path + "/data.json")
+        os.remove(path + "/preview.png")
+
+        try:
+            os.rmdir(path)
+        except OSError as err:
+            print("ERROR accured while deleting a save:", err, "\nCan't delete the folder if it's not empty. You have to delete the folder manually from the provided path.")
+
+        if stats.current_scene == name:
+            print("deleted current scene")
+        
+
         
     def __select_btn(self, path_to_folder: str, selection_btn_index: int) -> None:
         self.selected_save["index"] = selection_btn_index

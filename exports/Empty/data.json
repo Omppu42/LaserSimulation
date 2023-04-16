@@ -1,0 +1,20 @@
+{
+  "ray": {
+    "position": {
+      "x": 400,
+      "y": 400
+    },
+    "rotation": 270
+  },
+  "squares": [
+    {
+      "position": {
+        "x": 3000,
+        "y": 3000
+      },
+      "rotation": 0,
+      "scale": 10
+    }
+  ],
+  "circles": []
+}

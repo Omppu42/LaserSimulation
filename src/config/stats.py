@@ -7,7 +7,7 @@ class Stats():
         self.ray_rotation = 0
         self.total_obstacles = 0
 
-        self.current_scene = "Default"
+        self.current_scene = "Empty"
         self.edited = False
 
         self.simulation_running = False
