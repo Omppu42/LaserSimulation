@@ -1,5 +1,8 @@
 # Laser Simulation
-<img src="https://img.shields.io/github/stars/Omppu42/LaserSimulation?color=yellow&style=for-the-badge"> <img src="https://img.shields.io/github/forks/Omppu42/LaserSimulation?style=for-the-badge"> <img src="https://img.shields.io/github/issues/Omppu42/LaserSimulation?style=for-the-badge"> <img src="https://img.shields.io/github/manifest-json/v/Omppu42/LaserSimulation?style=for-the-badge"> <br> <br>
+![Stars](https://img.shields.io/github/stars/Omppu42/LaserSimulation?color=yellow&style=for-the-badge)
+![Forks](https://img.shields.io/github/forks/Omppu42/LaserSimulation?style=for-the-badge)
+![Issues](https://img.shields.io/github/issues/Omppu42/LaserSimulation?style=for-the-badge)
+![Version](https://img.shields.io/github/manifest-json/v/Omppu42/LaserSimulation?style=for-the-badge) <br> <br>
 
 <b>Laser simulation</b> is a simulator made by <i>Omppu42</i> <br>
 Made using <i>Python, Pygame and tkinter</i> <br>
