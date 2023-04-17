@@ -6,6 +6,8 @@ from gui.tkinter.unsaved_changes import UnsavedChangesDialog
 
 from obstacles.obstacle_manager import obstacle_manager
 from config.stats import stats
+from config.settings import settings
+
 from ray import Ray
 
 
@@ -47,6 +49,7 @@ def on_exit(sidebar, profiler) -> None:
 
         json.dump(data, f, indent=2)
 
-    profiler.disable()
-    profiler.print_stats()
+    if settings.profile:
+        profiler.disable()
+        profiler.print_stats()
     sys.exit()

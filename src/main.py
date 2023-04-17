@@ -4,11 +4,13 @@ if os.path.basename(os.getcwd()) == "src":
     os.chdir(os.path.abspath("../"))
 
 ver = sys.version_info
+ver_str = f"Python {ver.major}.{ver.minor}.{ver.micro}"
+
 if ver.major != 3  or ver.minor > 10:
-    raise Exception("Please use Python 3.9 - 3.10. Python version 3.11 isn't supported")
+    raise Exception(f"Please use Python 3.9. Current: {ver_str}")
 
 if ver.major == 3 and ver.minor < 9:
-    print("CAUTION: The program is supposed to be run with Python version 3.9. Going bellow this there might be some bugs.")
+    raise Exception(f"Please use Python 3.9. Current: {ver_str}")
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
@@ -28,6 +30,7 @@ def main():
     from event_handler import handle_events
 
     import import_export.level_loader as level_loader
+    profiler = None
 
     if settings.profile:
         profiler = cProfile.Profile()
