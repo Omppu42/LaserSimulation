@@ -1,16 +1,7 @@
-import cProfile, os, sys
+import cProfile, os
 
 if os.path.basename(os.getcwd()) == "src":
     os.chdir(os.path.abspath("../"))
-
-ver = sys.version_info
-ver_str = f"Python {ver.major}.{ver.minor}.{ver.micro}"
-
-if ver.major != 3  or ver.minor > 10:
-    raise Exception(f"Please use Python 3.9. Current: {ver_str}")
-
-if ver.major == 3 and ver.minor < 9:
-    raise Exception(f"Please use Python 3.9. Current: {ver_str}")
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 

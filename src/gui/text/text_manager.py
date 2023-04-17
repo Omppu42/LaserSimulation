@@ -4,7 +4,7 @@ pygame.init()
 from gui.text.text_object import TextObject
 
 class TextManager():
-    def __init__(self, text_objects: list[TextObject]):
+    def __init__(self, text_objects: list):
         self.text_objects = text_objects
 
     def render_text(self, screen) -> None:

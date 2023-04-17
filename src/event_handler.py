@@ -25,18 +25,27 @@ def handle_events(sidebar: Sidebar, ray: Ray, clock: pygame.time.Clock, profiler
         if event.type == pygame.KEYDOWN:
             sidebar.handle_key_pressed(event)
             obstacle_manager.handle_events(event)
+            
 
         if event.type == pygame.MOUSEBUTTONUP:
             obstacle_manager.check_mouse_up()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if pygame.mouse.get_pressed()[0]:    
+            if pygame.mouse.get_pressed()[0]:
                 obstacle_manager.check_click(pygame.mouse.get_pos())
                 sidebar.check_click(ray)
 
         if event.type == pygame.MOUSEMOTION:
+            
             sidebar.check_mouse_motion()
             obstacle_manager.mouse_motion()
+
+    # handle tkinter window opening events that need to wait for some time before openign
+    if stats.tkinter_func_to_run[1] == 20:
+        stats.tkinter_func_to_run[0]()
+
+    if not stats.tkinter_func_to_run[0] is None:
+        stats.tkinter_func_to_run = (stats.tkinter_func_to_run[0], stats.tkinter_func_to_run[1] + 1)
 
 
 def on_exit(sidebar, profiler) -> None:
@@ -52,4 +61,5 @@ def on_exit(sidebar, profiler) -> None:
     if settings.profile:
         profiler.disable()
         profiler.print_stats()
+
     sys.exit()

@@ -20,4 +20,7 @@ class Stats():
         self.ray_pos_rounded = (0, 0)
         self.sidebar_texts_data = {}
 
+        self.tkinter_func_to_run = (None, 0)
+        self.tkinter_can_new_func = False
+
 stats = Stats()

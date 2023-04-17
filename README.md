@@ -13,9 +13,9 @@ Made using <i>Python, Pygame and tkinter</i> <br>
 - *Save and load* -system to keep track of different scenes 
 
 # Requirements
-![Requires Python 3.9](https://img.shields.io/badge/Python-v3.9-blue?style=for-the-badge) <br>
-NOTE: Python 3.11 is NOT supported <br> <br>
-You can install python here:
+![Requires Python 3](https://img.shields.io/badge/Python-v3-blue?style=for-the-badge) <br>
+Tested with python 3.9 - 3.11. Might work bellow this <br>
+Install python here:
 https://www.python.org/downloads/
 
 ### Packages

@@ -60,15 +60,19 @@ class Exporter():
         self.name_entry = tk.Entry(width=20, font=18, validate="key", validatecommand=vcmd)
         self.name_entry.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
-        self.cancel_button = tk.Button(text=no_button_text, command=self.cancel)
-        self.cancel_button.place(relx=0.6, rely=0.85, anchor=tk.CENTER)
+        self.cancel_button = tk.Button(text=no_button_text, command=self.cancel, font=18, width=9, height=2, bg="gray99")
+        self.cancel_button.place(relx=0.65, rely=0.88, anchor=tk.CENTER)
 
-        self.export_button = tk.Button(text="Export", command=self.confirm)
-        self.export_button.place(relx=0.4, rely=0.85, anchor=tk.CENTER)
+        self.export_button = tk.Button(text="Export", command=self.confirm, font=18, width=9, height=2, bg="gray99")
+        self.export_button.place(relx=0.35, rely=0.88, anchor=tk.CENTER)
 
         self.window.resizable(False, False)
 
         self.window.mainloop()
+
+        # allow new tkinter window to be made
+        stats.tkinter_func_to_run = (None, 0)
+        stats.tkinter_can_new_func = False
 
 
     def cancel(self) -> None:

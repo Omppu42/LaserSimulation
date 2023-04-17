@@ -5,7 +5,7 @@ from gui.text.text_with_input import TextWithInputObject
 from gui.input_field import NumberInputField
 
 class TextWithInputManager():
-    def __init__(self, objects: list[TextWithInputObject]):
+    def __init__(self, objects: list):
         self.objects = objects
 
     def check_click(self) -> None:

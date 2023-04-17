@@ -239,10 +239,12 @@ class Sidebar():
 
         if self.import_button.check_click():
             self.exporter.make_empty()
-            self.importer.import_data()
-
+            if stats.tkinter_func_to_run[0] is None:
+                stats.tkinter_func_to_run = (self.importer.import_data, 0)
+                
         if self.export_button.check_click():
-            self.exporter.export_data()
+            if stats.tkinter_func_to_run[0] is None:
+                stats.tkinter_func_to_run = (self.exporter.export_data, 0)
 
         if self.spawn_square_button.check_click():
             obstacle_manager.spawn_square()

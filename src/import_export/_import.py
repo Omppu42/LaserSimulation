@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno
 
 import pygame
+
 pygame.init()
 
 from datetime import datetime
@@ -12,9 +13,9 @@ from PIL import ImageTk, Image
 from config.stats import stats
 from config.settings import settings
 
-import import_export.level_loader as level_loader
-
 from gui.tkinter.scrollable_frame import ScrollableFrame
+
+import import_export.level_loader as level_loader
 
 class Importer():
     SELECTION_W = 500
@@ -32,6 +33,7 @@ class Importer():
         self.error_label = None
 
     def import_data(self) -> None:
+        
         self.selected_save = {}
         self.selected_save["index"] = -1
         self.selected_save["path"] = ""
@@ -61,6 +63,10 @@ class Importer():
         self.__get_folders_to_selection()
 
         self.window.mainloop()
+
+        # allow new tkinter window to be made
+        stats.tkinter_func_to_run = (None, 0)
+        stats.tkinter_can_new_func = False
 
     def __cancel(self) -> None:
         self.window.destroy()
