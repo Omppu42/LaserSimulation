@@ -14,7 +14,7 @@ Made using <i>Python, Pygame and tkinter</i> <br>
 
 # Requirements
 ![Requires Python 3](https://img.shields.io/badge/Python-v3-blue?style=for-the-badge) <br>
-Tested with python 3.9 - 3.11. Might work bellow this <br>
+Tested with python 3.7 - 3.11. Might work bellow this <br>
 Install python here:
 https://www.python.org/downloads/
 
