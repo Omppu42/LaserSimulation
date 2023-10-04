@@ -7,6 +7,11 @@
 <b>Laser simulation</b> is a simulator made by <i>Omppu42</i> <br>
 Made using <i>Python, Pygame and tkinter</i> <br>
 
+## Latest Version
+
+### V 1.1.1
+Patched Pillow security vulnerability
+
 ## Features
 - Lazer bouncing
 - Editor to configure the scene however you want to

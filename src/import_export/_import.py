@@ -173,7 +173,7 @@ class Importer():
 
         # Load preview image
         image = Image.open(_dir+"/preview.png")
-        image = image.resize((150, 150), Image.ANTIALIAS)
+        image = image.resize((150, 150))
         photo_image = ImageTk.PhotoImage(image)
 
         # Display preview image
